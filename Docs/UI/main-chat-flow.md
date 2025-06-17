@@ -8,11 +8,9 @@ flowchart TD
     B --> W[WishBubble]
     B --> S[SuggestionBubble]
     MC --> I(InputBar)
-    MC --> VM(MainChatViewModel)
-    VM --> WS[WishService]
-    VM --> AS[AISuggestionService]
+    MC --> AS[AISuggestionService]
 ```
 
-`MainChatViewModel` loads persisted wishes via `WishService` and fetches suggestions from `AISuggestionService`. Bubbles render each item, and the `InputBar` lets users add new wishes.
+`MainChatView` loads wishes directly from SwiftData and fetches suggestions from `AISuggestionService`. Bubbles render each item, and the `InputBar` lets users add new wishes.
 
 Use `MainChatView()` as the root view of the app.
