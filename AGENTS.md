@@ -39,3 +39,8 @@ let user = User(name: "Carol") // ❌ Less preferred when type is not obvious
 
 All Markdown documents must conform to the rules defined at:  
 https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+
+## Reference Implementations
+
+Implementations should closely follow the architectural and coding patterns used in the [Incomes](https://github.com/muhiro12/Incomes) and [Cookle](https://github.com/muhiro12/Cookle) repositories.
