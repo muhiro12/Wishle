@@ -30,4 +30,3 @@ struct DeleteTaskIntent {
         return .result()
     }
 }
-

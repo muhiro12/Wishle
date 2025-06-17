@@ -73,7 +73,7 @@ struct NextUpWidget: Widget {
 
 extension Task {
     fileprivate static var placeholder: Task {
-        .init(title: "Sample", notes: nil, dueDate: .now.addingTimeInterval(3600), priority: 0)
+        .init(title: "Sample", notes: nil, dueDate: .now.addingTimeInterval(3_600), priority: 0)
     }
 }
 

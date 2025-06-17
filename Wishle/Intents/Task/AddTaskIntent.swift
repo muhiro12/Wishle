@@ -40,4 +40,3 @@ struct AddTaskIntent {
         return .result()
     }
 }
-

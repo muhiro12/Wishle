@@ -39,7 +39,7 @@ final class Tag: Identifiable, Hashable {
         [
             .init(name: "home"),
             .init(name: "work"),
-            .init(name: "urgent"),
+            .init(name: "urgent")
         ]
     }
 }

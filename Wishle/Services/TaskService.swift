@@ -35,7 +35,7 @@ final class TaskService: TaskServiceProtocol {
         do {
             let schema = Schema([
                 Task.self,
-                Tag.self,
+                Tag.self
             ])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             let container = try ModelContainer(for: schema, configurations: [configuration])
@@ -58,19 +58,19 @@ final class TaskService: TaskServiceProtocol {
         return try? modelContext.fetch(descriptor).first
     }
 
-    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Task {
+    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Task {
         let task = Task(title: title, notes: notes, dueDate: dueDate, priority: priority)
         modelContext.insert(task)
         try modelContext.save()
         return task
     }
 
-    func updateTask(_ task: Task) async throws {
+    func updateTask(_ task: Task) throws {
         task.updatedAt = .now
         try modelContext.save()
     }
 
-    func deleteTask(_ task: Task) async throws {
+    func deleteTask(_ task: Task) throws {
         modelContext.delete(task)
         try modelContext.save()
     }
@@ -97,4 +97,3 @@ final class TaskService: TaskServiceProtocol {
         }.first
     }
 }
-
