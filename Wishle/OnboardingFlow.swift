@@ -29,6 +29,7 @@ struct LongPressQuickEditTip: Tip {
 struct OnboardingFlow: View {
     @State private var selection = 0
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     private let swipeTip: SwipeToCompleteTip = .init()
     private let editTip: LongPressQuickEditTip = .init()
@@ -72,7 +73,7 @@ struct OnboardingFlow: View {
     }
 
     private func finish() {
-        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+        hasSeenOnboarding = true
         dismiss()
     }
 }
