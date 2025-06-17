@@ -71,7 +71,8 @@ struct WishSuggestion: Identifiable, Hashable {
     func refreshSuggestions() async {
         let suggestions = await fetchSuggestions()
         bubbles.removeAll { bubble in
-            if case .suggestion = bubble { return true }return false
+            if case .suggestion = bubble { return true }
+            return false
         }
         bubbles.append(contentsOf: suggestions.map(ChatBubble.suggestion))
     }
