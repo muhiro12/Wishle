@@ -25,7 +25,11 @@ struct WishleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
+                ContentView()
+            } else {
+                OnboardingFlow()
+            }
         }
         .modelContainer(sharedModelContainer)
     }
