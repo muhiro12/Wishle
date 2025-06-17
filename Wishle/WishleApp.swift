@@ -17,7 +17,8 @@ struct WishleApp: App {
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
-            Item.self
+            Wish.self,
+            Tag.self
         ])
         let configuration: ModelConfiguration
         if subscriptionManager.isSubscribed {
@@ -35,7 +36,7 @@ struct WishleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainChatView()
                 .sheet(isPresented: $isPaywallPresented) {
                     PaywallView()
                 }
