@@ -1,5 +1,5 @@
 //
-//  Task.swift
+//  Wish.swift
 //  Wishle
 //
 //  Created by Hiromu Nakano on 2025/06/17.
@@ -8,18 +8,18 @@
 import Foundation
 import SwiftData
 
-/// A task item within Wishle.
+/// A wish item within Wishle.
 @Model
-final class Task: Identifiable, Hashable {
-    /// Unique identifier for the task.
+final class Wish: Identifiable, Hashable {
+    /// Unique identifier for the wish.
     @Attribute(.unique) var id: UUID
     /// The user-facing title.
     var title: String
-    /// Optional notes about the task.
+    /// Optional notes about the wish.
     var notes: String?
     /// An optional due date.
     var dueDate: Date?
-    /// Marks the task as completed.
+    /// Marks the wish as completed.
     var isCompleted: Bool
     /// Priority level (0 normal, 1 high).
     var priority: Int
@@ -28,10 +28,10 @@ final class Task: Identifiable, Hashable {
     /// Last update timestamp.
     var updatedAt: Date
 
-    /// Tags associated with the task. Removing the task deletes its tags.
+    /// Tags associated with the wish. Removing the wish deletes its tags.
     @Relationship(deleteRule: .cascade) var tags: [Tag] = []
 
-    /// Returns true when the due date has passed and the task is not completed.
+    /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {
         guard let dueDate else { return false }
         return dueDate < .now && !isCompleted
