@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WidgetKit
+import Foundation
 
 struct NextUpProvider: TimelineProvider {
     func placeholder(in _: Context) -> NextUpEntry {
@@ -18,7 +19,7 @@ struct NextUpProvider: TimelineProvider {
     }
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<NextUpEntry>) -> Void) {
-        let task = TaskService.shared.nextUpTask()
+        let task = TaskDataStore.shared.nextUpTask()
         let entry = NextUpEntry(date: .now, task: task)
         let timeline = Timeline(entries: [entry], policy: .after(.now.advanced(by: 60 * 15)))
         completion(timeline)
@@ -27,7 +28,7 @@ struct NextUpProvider: TimelineProvider {
 
 struct NextUpEntry: TimelineEntry {
     let date: Date
-    let task: Task?
+    let task: WidgetTask?
 }
 
 struct NextUpWidgetEntryView: View {
@@ -71,9 +72,9 @@ struct NextUpWidget: Widget {
     }
 }
 
-extension Task {
-    fileprivate static var placeholder: Task {
-        .init(title: "Sample", notes: nil, dueDate: .now.addingTimeInterval(3_600), priority: 0)
+extension WidgetTask {
+    static var placeholder: WidgetTask {
+        .init(id: .init(), title: "Sample", dueDate: .now.addingTimeInterval(3_600), priority: 0)
     }
 }
 
