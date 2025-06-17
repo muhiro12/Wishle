@@ -10,19 +10,19 @@ import TipKit
 
 struct SwipeToCompleteTip: Tip {
     var title: Text {
-        "Swipe to complete"
+        Text("Swipe to complete")
     }
     var message: Text? {
-        "Swipe a task to mark it completed."
+        Text("Swipe a task to mark it completed.")
     }
 }
 
 struct LongPressQuickEditTip: Tip {
     var title: Text {
-        "Long-press for quick edit"
+        Text("Long-press for quick edit")
     }
     var message: Text? {
-        "Long press on a task to edit it."
+        Text("Long press on a task to edit it.")
     }
 }
 

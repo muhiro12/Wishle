@@ -14,7 +14,7 @@ struct RemindersExporter {
     private let service: TaskServiceProtocol
 
     init(eventStore: EKEventStore = .init(),
-         service: TaskServiceProtocol = TaskService.shared) {
+         service: TaskServiceProtocol) {
         self.eventStore = eventStore
         self.service = service
     }
@@ -24,7 +24,7 @@ struct RemindersExporter {
         let tasks = try service.context.fetch(FetchDescriptor<Task>())
         for task in tasks {
             for tag in task.tags {
-                let calendar = try fetchOrCreateCalendar(name: tag.name)
+                let calendar = try await fetchOrCreateCalendar(name: tag.name)
                 if let reminder = try await findReminder(for: task, in: calendar) {
                     let lastModified = reminder.lastModifiedDate ?? .distantPast
                     if task.updatedAt > lastModified {
@@ -47,15 +47,28 @@ struct RemindersExporter {
         }
         let calendar = EKCalendar(for: .reminder, eventStore: eventStore)
         calendar.title = name
-        calendar.source = eventStore.defaultCalendarForNewReminders()?.source
-            ?? eventStore.defaultCalendarForNewEvents().source
+        if let source = eventStore.defaultCalendarForNewReminders()?.source {
+            calendar.source = source
+        } else if let newEventCalendar = eventStore.defaultCalendarForNewEvents {
+            calendar.source = newEventCalendar.source
+        } else {
+            throw NSError(domain: "RemindersExporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "No valid calendar source found."])
+        }
         try eventStore.saveCalendar(calendar, commit: false)
         return calendar
     }
 
     private func findReminder(for task: Task, in calendar: EKCalendar) async throws -> EKReminder? {
         let predicate = eventStore.predicateForReminders(in: [calendar])
-        let reminders = try await eventStore.fetchReminders(matching: predicate)
+        let reminders: [EKReminder] = try await withCheckedThrowingContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { fetchedReminders in
+                if let reminders = fetchedReminders {
+                    continuation.resume(returning: reminders)
+                } else {
+                    continuation.resume(returning: [])
+                }
+            }
+        }
         return reminders.first { reminder in
             reminder.title == task.title && reminder.dueDateComponents?.date == task.dueDate
         }
@@ -65,7 +78,7 @@ struct RemindersExporter {
         reminder.calendar = calendar
         reminder.title = task.title
         reminder.notes = task.notes
-        reminder.priority = Int16(task.priority)
+        reminder.priority = Int(task.priority)
         if let dueDate = task.dueDate {
             reminder.dueDateComponents = Calendar.current.dateComponents([
                 .year, .month, .day, .hour, .minute

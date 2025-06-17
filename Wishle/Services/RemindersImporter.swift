@@ -13,19 +13,18 @@ struct RemindersImporter {
     private let eventStore: EKEventStore
     private let service: TaskServiceProtocol
 
-    init(eventStore: EKEventStore = .init(),
-         service: TaskServiceProtocol = TaskService.shared) {
+    init(eventStore: EKEventStore = .init(), service: TaskServiceProtocol? = nil) {
         self.eventStore = eventStore
-        self.service = service
+        self.service = service ?? TaskService.shared
     }
 
     func `import`() async throws {
-        try await eventStore.requestFullAccessToReminders()
+        try await requestFullAccessToRemindersAsync()
         let calendars = eventStore.calendars(for: .reminder)
         for calendar in calendars {
             let tag = try fetchOrCreateTag(name: calendar.title)
             let predicate = eventStore.predicateForReminders(in: [calendar])
-            let reminders = try await eventStore.fetchReminders(matching: predicate)
+            let reminders = try await fetchRemindersAsync(matching: predicate)
             for reminder in reminders {
                 guard let title = reminder.title else { continue }
                 let dueDate = reminder.dueDateComponents?.date
@@ -39,23 +38,24 @@ struct RemindersImporter {
                         existing.dueDate = dueDate
                         existing.isCompleted = reminder.isCompleted
                         existing.priority = priority
-                        try service.updateTask(existing)
+                        try await service.updateTask(existing)
                     }
                 } else {
-                    var task = try service.addTask(title: title,
-                                                   notes: notes,
-                                                   dueDate: dueDate,
-                                                   priority: priority)
+                    var task = try await service.addTask(title: title,
+                                                         notes: notes,
+                                                         dueDate: dueDate,
+                                                         priority: priority)
                     task.isCompleted = reminder.isCompleted
                     task.tags.append(tag)
-                    try service.updateTask(task)
+                    try await service.updateTask(task)
                 }
             }
         }
     }
 
     private func fetchOrCreateTag(name: String) throws -> Tag {
-        let descriptor = FetchDescriptor<Tag>(predicate: #Predicate { $0.name == name.lowercased() })
+        let lowercasedName = name.lowercased()
+        let descriptor = FetchDescriptor<Tag>(predicate: #Predicate { $0.name == lowercasedName })
         if let tag = try service.context.fetch(descriptor).first {
             return tag
         }
@@ -68,8 +68,34 @@ struct RemindersImporter {
     private func findTask(for reminder: EKReminder, tag: Tag) throws -> Task? {
         guard let title = reminder.title else { return nil }
         let descriptor = FetchDescriptor<Task>(predicate: #Predicate { $0.title == title })
-        guard let tasks = try service.context.fetch(descriptor) as [Task]? else { return nil }
+        let tasks = try service.context.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
         return tasks.first { $0.dueDate == dueDate && $0.tags.contains(tag) }
+    }
+
+    private func requestFullAccessToRemindersAsync() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            eventStore.requestFullAccessToReminders { granted, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else if granted {
+                    continuation.resume()
+                } else {
+                    continuation.resume(throwing: NSError(domain: "RemindersImporter", code: 1, userInfo: [NSLocalizedDescriptionKey: "Access to Reminders was not granted."]))
+                }
+            }
+        }
+    }
+
+    private func fetchRemindersAsync(matching predicate: NSPredicate) async throws -> [EKReminder] {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[EKReminder], Error>) in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                if let reminders {
+                    continuation.resume(returning: reminders)
+                } else {
+                    continuation.resume(throwing: NSError(domain: "RemindersImporter", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch reminders."]))
+                }
+            }
+        }
     }
 }

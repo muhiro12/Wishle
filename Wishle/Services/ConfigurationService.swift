@@ -1,7 +1,7 @@
 import Foundation
 
-@MainActor
-final class ConfigurationService: ObservableObject {
+@MainActor @Observable
+final class ConfigurationService {
     static let shared = ConfigurationService()
 
     private(set) var configuration: Configuration?

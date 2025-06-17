@@ -5,8 +5,8 @@
 //  Created by Hiromu Nakano on 2025/06/17.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 #if os(iOS)
 import UIKit
 #endif
@@ -15,7 +15,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
 
-    @StateObject private var configurationService = ConfigurationService.shared
+    @State private var configurationService = ConfigurationService.shared
     @State private var isUpdateAlertPresented = false
 
     var body: some View {
@@ -30,15 +30,15 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-#if os(macOS)
+            #if os(macOS)
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
+            #endif
             .toolbar {
-#if os(iOS)
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-#endif
+                #endif
                 ToolbarItem {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")

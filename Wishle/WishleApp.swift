@@ -5,17 +5,16 @@
 //  Created by Hiromu Nakano on 2025/06/17.
 //
 
-import SwiftUI
 import SwiftData
-import SubscriptionManager
+import SwiftUI
 
 @main
 struct WishleApp: App {
-    @StateObject private var subscriptionManager = SubscriptionManager.shared
+    @State private var subscriptionManager = SubscriptionManager.shared
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
-            Item.self,
+            Item.self
         ])
         let configuration: ModelConfiguration
         if subscriptionManager.isSubscribed {
