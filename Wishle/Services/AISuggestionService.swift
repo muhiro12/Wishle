@@ -1,6 +1,12 @@
 import Foundation
 import FoundationModels
 
+/// Protocol for services that provide wish suggestions.
+protocol AISuggestionServiceProtocol {
+    /// Generates wish suggestions for the provided context.
+    func suggestTasks(for context: SuggestionContext) async throws -> [Wish]
+}
+
 @Generable
 private struct TaskSuggestion: Decodable {
     var title: String
@@ -15,7 +21,7 @@ struct SuggestionContext: Sendable {
 
 /// Service that generates task suggestions using an on-device foundation model.
 @MainActor
-final class AISuggestionService {
+final class AISuggestionService: AISuggestionServiceProtocol {
     static let shared = AISuggestionService()
 
     private let session: LanguageModelSession
