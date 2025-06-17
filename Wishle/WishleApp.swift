@@ -33,11 +33,15 @@ struct WishleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .sheet(isPresented: .constant(!subscriptionManager.isSubscribed)) {
-                    PaywallView()
-                }
-                .task { await subscriptionManager.load() }
+            if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
+                ContentView()
+                    .sheet(isPresented: .constant(!subscriptionManager.isSubscribed)) {
+                        PaywallView()
+                    }
+                    .task { await subscriptionManager.load() }
+            } else {
+                OnboardingFlow()
+            }
         }
         .modelContainer(sharedModelContainer)
     }
