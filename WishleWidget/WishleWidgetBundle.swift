@@ -15,6 +15,6 @@ struct WishleWidgetBundle: WidgetBundle {
         NextUpWidget()
         WishleWidgetControl()
         WishleWidgetLiveActivity()
-        NextUpWidgetLiveActivity()
+        NextUpLiveActivity()
     }
 }
