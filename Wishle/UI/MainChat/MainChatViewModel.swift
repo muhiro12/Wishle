@@ -1,3 +1,4 @@
+internal import Combine
 import Foundation
 import SwiftUI
 
@@ -30,8 +31,8 @@ struct WishSuggestion: Identifiable, Hashable {
     private let wishService: WishServiceProtocol
     private let suggestionService: AISuggestionServiceProtocol
 
-    init(wishService: WishServiceProtocol = WishService.shared,
-         suggestionService: AISuggestionServiceProtocol = AISuggestionService.shared) {
+    init(wishService: WishServiceProtocol,
+         suggestionService: AISuggestionServiceProtocol) {
         self.wishService = wishService
         self.suggestionService = suggestionService
     }
@@ -49,20 +50,20 @@ struct WishSuggestion: Identifiable, Hashable {
     func addWish(title: String) async {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        guard let wish = try? wishService.addWish(title: trimmed, notes: nil, dueDate: nil, priority: 0) else { return }
+        guard let wish = try? await wishService.addWish(title: trimmed, notes: nil, dueDate: nil, priority: 0) else { return }
         bubbles.append(.wish(wish))
     }
 
     /// Marks the given wish as completed.
     func completeWish(_ wish: Wish) async {
         wish.isCompleted = true
-        try? wishService.updateWish(wish)
+        try? await wishService.updateWish(wish)
     }
 
     /// Converts a suggestion to a persisted wish.
     func acceptSuggestion(_ suggestion: WishSuggestion) async {
         guard let index = bubbles.firstIndex(where: { $0.id == suggestion.id }) else { return }
-        guard let wish = try? wishService.addWish(title: suggestion.title, notes: suggestion.notes, dueDate: nil, priority: 0) else { return }
+        guard let wish = try? await wishService.addWish(title: suggestion.title, notes: suggestion.notes, dueDate: nil, priority: 0) else { return }
         bubbles[index] = .wish(wish)
     }
 
@@ -70,12 +71,12 @@ struct WishSuggestion: Identifiable, Hashable {
     func refreshSuggestions() async {
         let suggestions = await fetchSuggestions()
         bubbles.removeAll { bubble in
-            if case .suggestion = bubble { return true } else { return false }
+            if case .suggestion = bubble { return true }return false
         }
         bubbles.append(contentsOf: suggestions.map(ChatBubble.suggestion))
     }
 
-    private func fetchWishes() async -> [Wish] {
+    private func fetchWishes() -> [Wish] {
         (try? wishService.fetchWishes().sorted { $0.createdAt < $1.createdAt }) ?? []
     }
 

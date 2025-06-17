@@ -6,13 +6,13 @@ protocol WishServiceProtocol {
     /// Returns all wishes.
     func fetchWishes() throws -> [Wish]
     /// Adds a new wish and persists it.
-    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish
+    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish
     /// Finds a wish by identifier.
     func wish(id: UUID) -> Wish?
     /// Persists updates to the provided wish.
-    func updateWish(_ wish: Wish) throws
+    func updateWish(_ wish: Wish) async throws
     /// Deletes the wish from persistence.
-    func deleteWish(_ wish: Wish) throws
+    func deleteWish(_ wish: Wish) async throws
     /// Returns the next wish that is not completed, ordered by due date then priority.
     func nextUpWish() -> Wish?
     /// Underlying SwiftData context for advanced operations.
@@ -35,20 +35,20 @@ protocol WishServiceProtocol {
         try taskService.context.fetch(FetchDescriptor<Wish>())
     }
 
-    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish {
-        try taskService.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
+    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish {
+        try await taskService.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
     }
 
     func wish(id: UUID) -> Wish? {
         taskService.task(id: id)
     }
 
-    func updateWish(_ wish: Wish) throws {
-        try taskService.updateTask(wish)
+    func updateWish(_ wish: Wish) async throws {
+        try await taskService.updateTask(wish)
     }
 
-    func deleteWish(_ wish: Wish) throws {
-        try taskService.deleteTask(wish)
+    func deleteWish(_ wish: Wish) async throws {
+        try await taskService.deleteTask(wish)
     }
 
     func nextUpWish() -> Wish? {

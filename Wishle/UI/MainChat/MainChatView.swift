@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Root chat-style timeline allowing users to manage wishes.
 struct MainChatView: View {
-    @StateObject private var viewModel = MainChatViewModel()
+    @StateObject private var viewModel = MainChatViewModel(wishService: WishService.shared, suggestionService: AISuggestionService.shared)
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var isOnboardingPresented = false
     @State private var isPaywallPresented = false
