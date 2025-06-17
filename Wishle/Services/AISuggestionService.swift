@@ -32,9 +32,9 @@ final class AISuggestionService {
     }
 
     /// Generates task suggestions for the provided context.
-    func suggestTasks(for context: SuggestionContext) async throws -> [Task] {
+    func suggestTasks(for context: SuggestionContext) async throws -> [Wish] {
         let prompt = promptTemplate.replacingOccurrences(of: "{{context}}", with: context.text)
         let response = try await session.respond(to: prompt, generating: [TaskSuggestion].self)
-        return response.content.map { Task(title: $0.title, notes: $0.notes) }
+        return response.content.map { Wish(title: $0.title, notes: $0.notes) }
     }
 }

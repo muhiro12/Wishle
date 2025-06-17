@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-/// A tag used to categorize tasks.
+/// A tag used to categorize wishes.
 @Model
 final class Tag: Identifiable, Hashable {
     /// Unique identifier for the tag.
@@ -23,15 +23,15 @@ final class Tag: Identifiable, Hashable {
         }
     }
 
-    /// Tasks that include this tag.
-    @Relationship(inverse: \Task.tags) var tasks: [Task] = []
+    /// Wishes that include this tag.
+    @Relationship(inverse: \Wish.tags) var wishes: [Wish] = []
 
     init(id: UUID = .init(),
          name: String,
-         tasks: [Task] = []) {
+         wishes: [Wish] = []) {
         self.id = id
         self.name = name.lowercased()
-        self.tasks = tasks
+        self.wishes = wishes
     }
 
     /// Sample tags for preview usage.

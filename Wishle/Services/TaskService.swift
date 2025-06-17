@@ -8,23 +8,23 @@
 import Foundation
 import SwiftData
 
-/// A protocol that defines operations for managing `Task` instances.
+/// A protocol that defines operations for managing `Wish` instances.
 protocol TaskServiceProtocol {
     /// Adds a new task and persists it.
     /// - Returns: The created task instance.
-    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Task
+    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish
 
     /// Finds a task for the given identifier.
-    func task(id: UUID) -> Task?
+    func task(id: UUID) -> Wish?
 
     /// Persists updates to the provided task.
-    func updateTask(_ task: Task) async throws
+    func updateTask(_ task: Wish) async throws
 
     /// Deletes the task from persistence.
-    func deleteTask(_ task: Task) async throws
+    func deleteTask(_ task: Wish) async throws
 
     /// Returns the next task that is not completed, ordered by due date then priority.
-    func nextUpTask() -> Task?
+    func nextUpTask() -> Wish?
 
     /// Underlying SwiftData context for advanced operations.
     var context: ModelContext { get }
@@ -37,7 +37,7 @@ final class TaskService: TaskServiceProtocol {
     static var shared: TaskService = {
         do {
             let schema = Schema([
-                Task.self,
+                Wish.self,
                 Tag.self
             ])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -59,30 +59,30 @@ final class TaskService: TaskServiceProtocol {
         self.modelContext = modelContext
     }
 
-    func task(id: UUID) -> Task? {
-        let descriptor = FetchDescriptor<Task>(predicate: #Predicate { $0.id == id })
+    func task(id: UUID) -> Wish? {
+        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { $0.id == id })
         return try? modelContext.fetch(descriptor).first
     }
 
-    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Task {
-        let task = Task(title: title, notes: notes, dueDate: dueDate, priority: priority)
+    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish {
+        let task = Wish(title: title, notes: notes, dueDate: dueDate, priority: priority)
         modelContext.insert(task)
         try modelContext.save()
         return task
     }
 
-    func updateTask(_ task: Task) throws {
+    func updateTask(_ task: Wish) throws {
         task.updatedAt = .now
         try modelContext.save()
     }
 
-    func deleteTask(_ task: Task) throws {
+    func deleteTask(_ task: Wish) throws {
         modelContext.delete(task)
         try modelContext.save()
     }
 
-    func nextUpTask() -> Task? {
-        let descriptor = FetchDescriptor<Task>(predicate: #Predicate { !$0.isCompleted })
+    func nextUpTask() -> Wish? {
+        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { !$0.isCompleted })
         guard let tasks = try? modelContext.fetch(descriptor) else {
             return nil
         }

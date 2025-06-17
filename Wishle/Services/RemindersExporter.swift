@@ -21,7 +21,7 @@ struct RemindersExporter {
 
     func export() async throws {
         try await eventStore.requestFullAccessToReminders()
-        let tasks = try service.context.fetch(FetchDescriptor<Task>())
+        let tasks = try service.context.fetch(FetchDescriptor<Wish>())
         for task in tasks {
             for tag in task.tags {
                 let calendar = try fetchOrCreateCalendar(name: tag.name)
@@ -58,7 +58,7 @@ struct RemindersExporter {
         return calendar
     }
 
-    private func findReminder(for task: Task, in calendar: EKCalendar) async throws -> EKReminder? {
+    private func findReminder(for task: Wish, in calendar: EKCalendar) async throws -> EKReminder? {
         let predicate = eventStore.predicateForReminders(in: [calendar])
         let reminders: [EKReminder] = try await withCheckedThrowingContinuation { continuation in
             eventStore.fetchReminders(matching: predicate) { fetchedReminders in
@@ -74,7 +74,7 @@ struct RemindersExporter {
         }
     }
 
-    private func update(reminder: EKReminder, from task: Task, calendar: EKCalendar) {
+    private func update(reminder: EKReminder, from task: Wish, calendar: EKCalendar) {
         reminder.calendar = calendar
         reminder.title = task.title
         reminder.notes = task.notes
