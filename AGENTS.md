@@ -69,7 +69,18 @@ tasks.filter { $0.isCompleted }
 All Markdown documents must conform to the rules defined at:  
 https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
 
+## Project-wide Conventions
 
-## Reference Implementations
+### Use English for naming and comments
+
+Use English for:
+
+- Branch names (e.g., `feature/add-intent-support`, `bugfix/crash-on-startup`)
+- Code comments
+- Documentation and identifiers (variables, methods, etc.)
+
+Avoid using Japanese or other non-English languages in code unless strictly necessary (e.g., legal compliance, UI text localization).
+
+### Reference Implementations
 
 Implementations should closely follow the architectural and coding patterns used in the [Incomes](https://github.com/muhiro12/Incomes) and [Cookle](https://github.com/muhiro12/Cookle) repositories.
