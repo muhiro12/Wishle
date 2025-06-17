@@ -12,12 +12,8 @@ import SwiftUI
 struct WishleApp: App {
     @State private var subscriptionManager = SubscriptionManager.shared
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-    @State private var isOnboardingPresented: Bool
+    @State private var isOnboardingPresented = false
     @State private var isPaywallPresented = false
-
-    init() {
-        _isOnboardingPresented = State(initialValue: !hasSeenOnboarding)
-    }
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
@@ -47,11 +43,12 @@ struct WishleApp: App {
                     OnboardingFlow()
                 }
                 .task {
+                    isOnboardingPresented = !hasSeenOnboarding
                     await subscriptionManager.load()
                     isPaywallPresented = !subscriptionManager.isSubscribed
                 }
-                .onReceive(subscriptionManager.$isSubscribed) { isSubscribed in
-                    isPaywallPresented = !isSubscribed
+                .onChange(of: subscriptionManager.isSubscribed) { _, newValue in
+                    isPaywallPresented = !newValue
                 }
         }
         .modelContainer(sharedModelContainer)
