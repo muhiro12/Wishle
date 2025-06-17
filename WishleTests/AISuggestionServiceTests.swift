@@ -2,7 +2,6 @@ import Testing
 @testable import Wishle
 
 struct AISuggestionServiceTests {
-
     @Test
     func testSuggestTasks() async throws {
         let service = AISuggestionService(randomProvider: SeededRandomProvider(seed: 42))

@@ -1,7 +1,7 @@
 import Foundation
 
 struct TaskDataStore {
-    static let shared = TaskDataStore()
+    static let shared = Self()
 
     private let defaults = UserDefaults(suiteName: "group.com.muhiro12.wishle")
     private let key = "nextUpTask"

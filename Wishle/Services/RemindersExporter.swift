@@ -24,7 +24,7 @@ struct RemindersExporter {
         let tasks = try service.context.fetch(FetchDescriptor<Task>())
         for task in tasks {
             for tag in task.tags {
-                let calendar = try await fetchOrCreateCalendar(name: tag.name)
+                let calendar = try fetchOrCreateCalendar(name: tag.name)
                 if let reminder = try await findReminder(for: task, in: calendar) {
                     let lastModified = reminder.lastModifiedDate ?? .distantPast
                     if task.updatedAt > lastModified {

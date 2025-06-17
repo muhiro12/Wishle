@@ -41,7 +41,7 @@ struct RemindersImporter {
                         try await service.updateTask(existing)
                     }
                 } else {
-                    var task = try await service.addTask(title: title,
+                    let task = try await service.addTask(title: title,
                                                          notes: notes,
                                                          dueDate: dueDate,
                                                          priority: priority)

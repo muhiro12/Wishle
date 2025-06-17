@@ -24,7 +24,7 @@ final class AISuggestionService {
     init() {
         self.session = LanguageModelSession()
         if let url = Bundle.main.url(forResource: "suggestion_template", withExtension: "txt", subdirectory: "Prompts"),
-           let template = try? String(contentsOf: url) {
+           let template = try? String(contentsOf: url, encoding: .utf8) {
             promptTemplate = template
         } else {
             promptTemplate = ""
