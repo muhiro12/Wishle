@@ -25,6 +25,9 @@ protocol TaskServiceProtocol {
 
     /// Returns the next task that is not completed, ordered by due date then priority.
     func nextUpTask() -> Task?
+
+    /// Underlying SwiftData context for advanced operations.
+    var context: ModelContext { get }
 }
 
 /// Default implementation of ``TaskServiceProtocol`` using SwiftData.
@@ -47,6 +50,9 @@ final class TaskService: TaskServiceProtocol {
 
     /// The underlying SwiftData context.
     private let modelContext: ModelContext
+
+    /// Exposes the underlying context for advanced operations.
+    var context: ModelContext { modelContext }
 
     /// Creates an instance with the given model context.
     init(modelContext: ModelContext) {
