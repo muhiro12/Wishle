@@ -22,6 +22,9 @@ protocol TaskServiceProtocol {
 
     /// Deletes the task from persistence.
     func deleteTask(_ task: Task) async throws
+
+    /// Returns the next task that is not completed, ordered by due date then priority.
+    func nextUpTask() -> Task?
 }
 
 /// Default implementation of ``TaskServiceProtocol`` using SwiftData.
@@ -70,6 +73,28 @@ final class TaskService: TaskServiceProtocol {
     func deleteTask(_ task: Task) async throws {
         modelContext.delete(task)
         try modelContext.save()
+    }
+
+    func nextUpTask() -> Task? {
+        let descriptor = FetchDescriptor<Task>(predicate: #Predicate { !$0.isCompleted })
+        guard let tasks = try? modelContext.fetch(descriptor) else {
+            return nil
+        }
+        return tasks.sorted { lhs, rhs in
+            switch (lhs.dueDate, rhs.dueDate) {
+            case let (lhsDate?, rhsDate?):
+                if lhsDate != rhsDate {
+                    return lhsDate < rhsDate
+                }
+                return lhs.priority > rhs.priority
+            case (nil, nil):
+                return lhs.priority > rhs.priority
+            case (nil, _):
+                return false
+            case (_, nil):
+                return true
+            }
+        }.first
     }
 }
 

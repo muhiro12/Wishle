@@ -12,7 +12,9 @@ import WidgetKit
 struct WishleWidgetBundle: WidgetBundle {
     var body: some Widget {
         WishleWidget()
+        NextUpWidget()
         WishleWidgetControl()
         WishleWidgetLiveActivity()
+        NextUpWidgetLiveActivity()
     }
 }
