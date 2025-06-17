@@ -5,9 +5,9 @@
 //  Created by Hiromu Nakano on 2025/06/17.
 //
 
+import Foundation
 import SwiftUI
 import WidgetKit
-import Foundation
 
 struct NextUpProvider: TimelineProvider {
     func placeholder(in _: Context) -> NextUpEntry {
@@ -69,12 +69,6 @@ struct NextUpWidget: Widget {
         .supportedFamilies([.systemSmall, .accessoryInline])
         .configurationDisplayName("Next Up")
         .description("Shows your next uncompleted task")
-    }
-}
-
-extension WidgetTask {
-    static var placeholder: WidgetTask {
-        .init(id: .init(), title: "Sample", dueDate: .now.addingTimeInterval(3_600), priority: 0)
     }
 }
 

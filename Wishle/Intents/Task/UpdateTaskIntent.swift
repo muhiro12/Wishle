@@ -7,16 +7,14 @@
 
 import AppIntents
 
-@available(iOS 19, macOS 15, *)
-@AppIntent("Update a task in Wishle")
-struct UpdateTaskIntent {
+struct UpdateTaskIntent: AppIntent {
     static var title: LocalizedStringResource = "Update Task"
 
     /// Service injected from the application context.
     var service: TaskServiceProtocol = TaskService.shared
 
     @Parameter(title: "ID")
-    var id: UUID
+    var id: String
 
     @Parameter(title: "Title")
     var title: String?
@@ -44,8 +42,8 @@ struct UpdateTaskIntent {
     }
 
     func perform() async throws -> some IntentResult {
-        guard let task = service.task(id: id) else {
-            return .result(value: .init())
+        guard let uuid = UUID(uuidString: id), let task = service.task(id: uuid) else {
+            return .result()
         }
         if let title { task.title = title }
         if let notes { task.notes = notes }

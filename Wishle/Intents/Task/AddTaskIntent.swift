@@ -7,9 +7,7 @@
 
 import AppIntents
 
-@available(iOS 19, macOS 15, *)
-@AppIntent("Add a task to Wishle")
-struct AddTaskIntent {
+struct AddTaskIntent: AppIntent {
     static var title: LocalizedStringResource = "Add Task"
 
     /// Service injected from the application context.
