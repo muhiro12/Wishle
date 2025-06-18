@@ -14,20 +14,20 @@ struct WishEntityQuery: EntityStringQuery {
     @MainActor
     func entities(for identifiers: [Wish.ID]) throws -> [Wish] {
         try identifiers.compactMap { identifier in
-            let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == identifier })
-            return try modelContainer.mainContext.fetch(descriptor).first.map(Wish.init)
+            let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { $0.id == identifier })
+            return try modelContainer.mainContext.fetch(descriptor).first
         }
     }
 
     @MainActor
     func entities(matching string: String) throws -> [Wish] {
         try modelContainer.mainContext.fetch(
-            FetchDescriptor<WishModel>(predicate: #Predicate { $0.title.localizedStandardContains(string) })
-        ).map(Wish.init)
+            FetchDescriptor<Wish>(predicate: #Predicate { $0.title.localizedStandardContains(string) })
+        )
     }
 
     @MainActor
     func suggestedEntities() throws -> [Wish] {
-        try modelContainer.mainContext.fetch(FetchDescriptor<WishModel>()).map(Wish.init)
+        try modelContainer.mainContext.fetch(FetchDescriptor<Wish>())
     }
 }
