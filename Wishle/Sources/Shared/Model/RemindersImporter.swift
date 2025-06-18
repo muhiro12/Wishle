@@ -33,18 +33,24 @@ struct RemindersImporter {
                 if let existing = try findTask(for: reminder, tag: tag) {
                     if let lastModified = reminder.lastModifiedDate,
                        lastModified > existing.updatedAt {
-                        existing.title = title
-                        existing.notes = notes
-                        existing.dueDate = dueDate
-                        existing.isCompleted = reminder.isCompleted
-                        existing.priority = priority
-                        try await service.updateTask(existing)
+                        try await UpdateTaskIntent.perform((
+                            context: service.context,
+                            id: existing.id.uuidString,
+                            title: title,
+                            notes: notes,
+                            dueDate: dueDate,
+                            isCompleted: reminder.isCompleted,
+                            priority: priority
+                        ))
                     }
                 } else {
-                    let task = try await service.addTask(title: title,
-                                                         notes: notes,
-                                                         dueDate: dueDate,
-                                                         priority: priority)
+                    let task = try await AddTaskIntent.perform((
+                        context: service.context,
+                        title: title,
+                        notes: notes,
+                        dueDate: dueDate,
+                        priority: priority
+                    ))
                     task.isCompleted = reminder.isCompleted
                     task.tags.append(tag)
                     try await service.updateTask(task)

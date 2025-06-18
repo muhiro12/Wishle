@@ -6,14 +6,23 @@
 //
 
 import AppIntents
+import SwiftUtilities
 
-struct ImportRemindersIntent: AppIntent {
+struct ImportRemindersIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Import Reminders"
 
     var importer: RemindersImporter = .init()
 
+    typealias Input = RemindersImporter
+    typealias Output = Void
+
+    static func perform(_ input: RemindersImporter) async throws {
+        try await input.import()
+    }
+
+    @MainActor
     func perform() async throws -> some IntentResult {
-        try await importer.import()
+        try await Self.perform(importer)
         return .result()
     }
 }
