@@ -1,8 +1,9 @@
 import AppIntents
 import SwiftData
+import SwiftUtilities
 
 @AppIntent
-struct UpdateTagIntent {
+struct UpdateTagIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Update Tag"
 
     @Environment(\.modelContext) private var modelContext
@@ -19,17 +20,26 @@ struct UpdateTagIntent {
         }
     }
 
-    func perform() async throws -> some IntentResult {
+    typealias Input = (context: ModelContext, id: String, name: String?)
+    typealias Output = Tag?
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (context, id, name) = input
         let descriptor = FetchDescriptor<TagModel>(predicate: #Predicate { $0.id == id })
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return .result()
-        }
+        guard let model = try context.fetch(descriptor).first else { return nil }
         if let name {
             let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !trimmed.isEmpty else { return .result() }
+            guard !trimmed.isEmpty else { return nil }
             model.name = trimmed
         }
-        try modelContext.save()
-        return .result(value: model.asTag())
+        try context.save()
+        return model.asTag()
+    }
+
+    func perform() async throws -> some IntentResult {
+        if let tag = try await Self.perform((context: modelContext, id: id, name: name)) {
+            return .result(value: tag)
+        }
+        return .result()
     }
 }

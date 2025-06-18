@@ -6,8 +6,9 @@
 //
 
 import AppIntents
+import SwiftUtilities
 
-struct UpdateTaskIntent: AppIntent {
+struct UpdateTaskIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Update Task"
 
     /// Service injected from the application context.
@@ -41,16 +42,22 @@ struct UpdateTaskIntent: AppIntent {
         }
     }
 
-    func perform() async throws -> some IntentResult {
-        guard let uuid = UUID(uuidString: id), let task = service.task(id: uuid) else {
-            return .result()
-        }
+    typealias Input = (service: TaskServiceProtocol, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
+    typealias Output = Void
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (service, id, title, notes, dueDate, isCompleted, priority) = input
+        guard let uuid = UUID(uuidString: id), let task = service.task(id: uuid) else { return }
         if let title { task.title = title }
         if let notes { task.notes = notes }
         if let dueDate { task.dueDate = dueDate }
         if let isCompleted { task.isCompleted = isCompleted }
         if let priority { task.priority = priority }
         try await service.updateTask(task)
+    }
+
+    func perform() async throws -> some IntentResult {
+        try await Self.perform((service: service, id: id, title: title, notes: notes, dueDate: dueDate, isCompleted: isCompleted, priority: priority))
         return .result()
     }
 }

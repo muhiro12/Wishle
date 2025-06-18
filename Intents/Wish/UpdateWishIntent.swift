@@ -1,8 +1,9 @@
 import AppIntents
 import SwiftData
+import SwiftUtilities
 
 @AppIntent
-struct UpdateWishIntent {
+struct UpdateWishIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Update Wish"
 
     @Environment(\.modelContext) private var modelContext
@@ -27,20 +28,28 @@ struct UpdateWishIntent {
         }
     }
 
-    func perform() async throws -> some IntentResult {
+    typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, priority: Int?)
+    typealias Output = Wish?
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (context, id, title, notes, priority) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return .result()
-        }
+        guard let model = try context.fetch(descriptor).first else { return nil }
         if let title {
-            guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                return .result()
-            }
-            model.title = title
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return nil }
+            model.title = trimmed
         }
         if let notes { model.notes = notes }
         if let priority { model.priority = priority }
-        try modelContext.save()
-        return .result(value: model.asWish())
+        try context.save()
+        return model.asWish()
+    }
+
+    func perform() async throws -> some IntentResult {
+        if let wish = try await Self.perform((context: modelContext, id: id, title: title, notes: notes, priority: priority)) {
+            return .result(value: wish)
+        }
+        return .result()
     }
 }

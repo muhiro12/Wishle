@@ -1,8 +1,9 @@
 import AppIntents
 import SwiftData
+import SwiftUtilities
 
 @AppIntent
-struct AddTagIntent {
+struct AddTagIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Add Tag"
 
     @Environment(\.modelContext) private var modelContext
@@ -14,13 +15,23 @@ struct AddTagIntent {
         Summary("Add \(\.$name)")
     }
 
+    typealias Input = (context: ModelContext, name: String)
+    typealias Output = Tag?
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (context, name) = input
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let tag = Tag.make(name: trimmed)
+        TagModel.create(from: tag, context: context)
+        try context.save()
+        return tag
+    }
+
     func perform() async throws -> some IntentResult {
-        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            return .result()
+        if let tag = try await Self.perform((context: modelContext, name: name)) {
+            return .result(value: tag)
         }
-        let tag = Tag.make(name: name)
-        TagModel.create(from: tag, context: modelContext)
-        try modelContext.save()
-        return .result(value: tag)
+        return .result()
     }
 }
