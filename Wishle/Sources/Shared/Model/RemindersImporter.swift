@@ -44,7 +44,7 @@ struct RemindersImporter {
                         ))
                     }
                 } else {
-                    let task = try await AddTaskIntent.perform((
+                    var task = try await AddTaskIntent.perform((
                         context: service.context,
                         title: title,
                         notes: notes,
@@ -73,10 +73,10 @@ struct RemindersImporter {
 
     private func findTask(for reminder: EKReminder, tag: Tag) throws -> Wish? {
         guard let title = reminder.title else { return nil }
-        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { $0.title == title })
-        let tasks = try service.context.fetch(descriptor)
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.title == title })
+        let models = try service.context.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
-        return tasks.first { $0.dueDate == dueDate && $0.tags.contains(tag) }
+        return models.map { $0.wish }.first { $0.dueDate == dueDate && $0.tags.contains(tag) }
     }
 
     private func requestFullAccessToRemindersAsync() async throws {
