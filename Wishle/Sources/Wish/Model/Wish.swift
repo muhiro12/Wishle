@@ -10,7 +10,7 @@ import Foundation
 /// In-memory representation of a wish item.
 struct Wish: Identifiable, Hashable {
     /// Unique identifier for the wish.
-    var id: UUID
+    var id: String
     /// The user-facing title.
     var title: String
     /// Optional notes about the wish.
@@ -35,7 +35,7 @@ struct Wish: Identifiable, Hashable {
         return dueDate < .now && !isCompleted
     }
 
-    init(id: UUID = .init(),
+    init(id: String = UUID().uuidString,
          title: String,
          notes: String? = nil,
          dueDate: Date? = nil,
@@ -66,7 +66,7 @@ struct Wish: Identifiable, Hashable {
             priority: model.priority,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt,
-            tags: model.tags
+            tags: model.tags.map(\.tag)
         )
     }
 }

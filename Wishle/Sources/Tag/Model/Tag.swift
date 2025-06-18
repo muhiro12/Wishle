@@ -6,15 +6,13 @@
 //
 
 import Foundation
-import SwiftData
 
-/// A tag used to categorize wishes.
-@Model
-final class Tag: Identifiable, Hashable {
+/// In-memory representation of a tag used to categorize wishes.
+struct Tag: Identifiable, Hashable {
     /// Unique identifier for the tag.
-    @Attribute(.unique) var id: UUID
+    var id: String
     /// Lowercased unique name of the tag.
-    @Attribute(.unique) var name: String {
+    var name: String {
         didSet {
             let lowercasedName = name.lowercased()
             if name != lowercasedName {
@@ -23,15 +21,15 @@ final class Tag: Identifiable, Hashable {
         }
     }
 
-    /// Wishes that include this tag.
-    @Relationship(inverse: \WishModel.tags) var wishes: [WishModel] = []
-
-    init(id: UUID = .init(),
-         name: String,
-         wishes: [WishModel] = []) {
+    init(id: String = UUID().uuidString,
+         name: String) {
         self.id = id
         self.name = name.lowercased()
-        self.wishes = wishes
+    }
+
+    /// Creates a ``Tag`` from a ``TagModel``.
+    init(_ model: TagModel) {
+        self.init(id: model.id, name: model.name)
     }
 
     /// Sample tags for preview usage.
