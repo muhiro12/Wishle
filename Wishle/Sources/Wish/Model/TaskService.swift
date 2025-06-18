@@ -80,7 +80,8 @@ final class TaskService: TaskServiceProtocol {
     }
 
     func updateTask(_ task: Wish) throws {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == task.id })
+        let id = task.id
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         guard let model = try modelContext.fetch(descriptor).first else {
             return
         }
@@ -96,7 +97,8 @@ final class TaskService: TaskServiceProtocol {
     }
 
     func deleteTask(_ task: Wish) throws {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == task.id })
+        let id = task.id
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         if let model = try modelContext.fetch(descriptor).first {
             modelContext.delete(model)
         }
@@ -108,7 +110,7 @@ final class TaskService: TaskServiceProtocol {
         guard let models = try? modelContext.fetch(descriptor) else {
             return nil
         }
-        let tasks = models.map { $0.wish }
+        let tasks = models.map(\.wish)
         return tasks.sorted { lhs, rhs in
             switch (lhs.dueDate, rhs.dueDate) {
             case let (lhsDate?, rhsDate?):
@@ -126,4 +128,3 @@ final class TaskService: TaskServiceProtocol {
         }.first
     }
 }
-
