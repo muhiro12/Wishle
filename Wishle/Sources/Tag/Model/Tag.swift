@@ -24,11 +24,11 @@ final class Tag: Identifiable, Hashable {
     }
 
     /// Wishes that include this tag.
-    @Relationship(inverse: \WishModel.tags) var wishes: [WishModel] = []
+    @Relationship(inverse: \Wish.tags) var wishes: [Wish] = []
 
     init(id: UUID = .init(),
          name: String,
-         wishes: [WishModel] = []) {
+         wishes: [Wish] = []) {
         self.id = id
         self.name = name.lowercased()
         self.wishes = wishes

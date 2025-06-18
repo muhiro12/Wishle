@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import SwiftData
 import AppIntents
 
 /// A wish item within Wishle.
+@Model
 final class Wish: Identifiable, Hashable, AppEntity {
     static let defaultQuery = WishEntityQuery()
 
@@ -27,7 +29,7 @@ final class Wish: Identifiable, Hashable, AppEntity {
         )
     }
     /// Unique identifier for the wish.
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     /// The user-facing title.
     var title: String
     /// Optional notes about the wish.
@@ -43,8 +45,8 @@ final class Wish: Identifiable, Hashable, AppEntity {
     /// Last update timestamp.
     var updatedAt: Date
 
-    /// Tags associated with the wish.
-    var tags: [Tag] = []
+    /// Tags associated with the wish. Removing the wish deletes its tags.
+    @Relationship(deleteRule: .cascade) var tags: [Tag] = []
 
     /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {
@@ -70,20 +72,5 @@ final class Wish: Identifiable, Hashable, AppEntity {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.tags = tags
-    }
-}
-
-extension Wish {
-    /// Creates an instance from the SwiftData model.
-    convenience init(_ model: WishModel) {
-        self.init(id: model.id,
-                  title: model.title,
-                  notes: model.notes,
-                  dueDate: model.dueDate,
-                  isCompleted: model.isCompleted,
-                  priority: model.priority,
-                  createdAt: model.createdAt,
-                  updatedAt: model.updatedAt,
-                  tags: model.tags)
     }
 }

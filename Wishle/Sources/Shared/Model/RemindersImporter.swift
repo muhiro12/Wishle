@@ -73,8 +73,8 @@ struct RemindersImporter {
 
     private func findTask(for reminder: EKReminder, tag: Tag) throws -> Wish? {
         guard let title = reminder.title else { return nil }
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.title == title })
-        let tasks = try service.context.fetch(descriptor).map(\.wish)
+        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { $0.title == title })
+        let tasks = try service.context.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
         return tasks.first { $0.dueDate == dueDate && $0.tags.contains(tag) }
     }

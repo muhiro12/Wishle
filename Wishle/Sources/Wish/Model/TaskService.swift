@@ -37,7 +37,7 @@ final class TaskService: TaskServiceProtocol {
     static var shared: TaskService = {
         do {
             let schema = Schema([
-                WishModel.self,
+                Wish.self,
                 Tag.self
             ])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -60,43 +60,33 @@ final class TaskService: TaskServiceProtocol {
     }
 
     func task(id: UUID) -> Wish? {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
-        return try? modelContext.fetch(descriptor).first?.wish
+        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { $0.id == id })
+        return try? modelContext.fetch(descriptor).first
     }
 
     func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish {
-        let model = WishModel.create(
-            context: modelContext,
-            title: title,
-            notes: notes,
-            dueDate: dueDate,
-            priority: priority
-        )
+        let task = Wish(title: title, notes: notes, dueDate: dueDate, priority: priority)
+        modelContext.insert(task)
         try modelContext.save()
-        return model.wish
+        return task
     }
 
     func updateTask(_ task: Wish) throws {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == task.id })
-        guard let model = try modelContext.fetch(descriptor).first else { return }
-        model.update(from: task)
+        task.updatedAt = .now
         try modelContext.save()
     }
 
     func deleteTask(_ task: Wish) throws {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == task.id })
-        if let model = try modelContext.fetch(descriptor).first {
-            modelContext.delete(model)
-            try modelContext.save()
-        }
+        modelContext.delete(task)
+        try modelContext.save()
     }
 
     func nextUpTask() -> Wish? {
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { !$0.isCompleted })
-        guard let models = try? modelContext.fetch(descriptor) else {
+        let descriptor = FetchDescriptor<Wish>(predicate: #Predicate { !$0.isCompleted })
+        guard let tasks = try? modelContext.fetch(descriptor) else {
             return nil
         }
-        return models.sorted { lhs, rhs in
+        return tasks.sorted { lhs, rhs in
             switch (lhs.dueDate, rhs.dueDate) {
             case let (lhsDate?, rhsDate?):
                 if lhsDate != rhsDate {
@@ -110,6 +100,6 @@ final class TaskService: TaskServiceProtocol {
             case (_, nil):
                 return true
             }
-        }.first?.wish
+        }.first
     }
 }

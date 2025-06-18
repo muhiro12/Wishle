@@ -21,9 +21,8 @@ struct RemindersExporter {
 
     func export() async throws {
         try await eventStore.requestFullAccessToReminders()
-        let models = try service.context.fetch(FetchDescriptor<WishModel>())
-        for model in models {
-            let task = model.wish
+        let tasks = try service.context.fetch(FetchDescriptor<Wish>())
+        for task in tasks {
             for tag in task.tags {
                 let calendar = try fetchOrCreateCalendar(name: tag.name)
                 if let reminder = try await findReminder(for: task, in: calendar) {
