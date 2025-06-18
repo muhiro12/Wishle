@@ -46,7 +46,7 @@ struct AddTaskIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some ReturnsValue<Wish> {
+    func perform() async throws -> some ReturnsValue<String> {
         let task = try await Self.perform((
             context: modelContainer.mainContext,
             title: title,
@@ -54,6 +54,6 @@ struct AddTaskIntent: AppIntent, IntentPerformer {
             dueDate: dueDate,
             priority: priority
         ))
-        return .result(value: task)
+        return .result(value: task.title)
     }
 }
