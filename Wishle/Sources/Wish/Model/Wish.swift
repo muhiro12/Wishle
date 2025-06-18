@@ -7,10 +7,27 @@
 
 import Foundation
 import SwiftData
+import AppIntents
 
 /// A wish item within Wishle.
 @Model
-final class Wish: Identifiable, Hashable {
+final class Wish: Identifiable, Hashable, AppEntity {
+    static let defaultQuery = WishEntityQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        .init(
+            name: .init("Wish", table: "AppIntents"),
+            numericFormat: LocalizedStringResource("\(placeholder: .int) Wishes", table: "AppIntents")
+        )
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        .init(
+            title: .init(title, table: "AppIntents"),
+            subtitle: notes.map { .init($0, table: "AppIntents") },
+            image: .init(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+        )
+    }
     /// Unique identifier for the wish.
     @Attribute(.unique) var id: UUID
     /// The user-facing title.
