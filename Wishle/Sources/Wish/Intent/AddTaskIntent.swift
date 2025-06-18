@@ -6,24 +6,27 @@
 //
 
 import AppIntents
+import SwiftData
+import SwiftUtilities
 
-struct AddTaskIntent: AppIntent {
+struct AddTaskIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Add Task"
 
     /// Service injected from the application context.
     var service: TaskServiceProtocol = TaskService.shared
+    @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "Title")
-    var title: String
+    private var title: String
 
     @Parameter(title: "Notes")
-    var notes: String?
+    private var notes: String?
 
     @Parameter(title: "Due Date")
-    var dueDate: Date?
+    private var dueDate: Date?
 
     @Parameter(title: "Priority", default: 0)
-    var priority: Int
+    private var priority: Int
 
     static var parameterSummary: some ParameterSummary {
         Summary("Add \(\.$title)") {
@@ -33,8 +36,24 @@ struct AddTaskIntent: AppIntent {
         }
     }
 
-    func perform() async throws -> some IntentResult {
-        _ = try await service.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
-        return .result()
+    typealias Input = (context: ModelContext, title: String, notes: String?, dueDate: Date?, priority: Int)
+    typealias Output = Wish
+
+    static func perform(_ input: Input) async throws -> Wish {
+        let (context, title, notes, dueDate, priority) = input
+        let service = TaskService(modelContext: context)
+        return try await service.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
+    }
+
+    @MainActor
+    func perform() async throws -> some ReturnsValue<Wish> {
+        let task = try await Self.perform((
+            context: modelContainer.mainContext,
+            title: title,
+            notes: notes,
+            dueDate: dueDate,
+            priority: priority
+        ))
+        return .result(value: task)
     }
 }
