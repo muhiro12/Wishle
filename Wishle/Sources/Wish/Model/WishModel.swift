@@ -1,16 +1,18 @@
 //
-//  Wish.swift
+//  WishModel.swift
 //  Wishle
 //
-//  Created by Hiromu Nakano on 2025/06/17.
+//  Created by Codex on 2025/06/17.
 //
 
 import Foundation
+import SwiftData
 
-/// In-memory representation of a wish item.
-struct Wish: Identifiable, Hashable {
+/// SwiftData model object for persisting wishes.
+@Model
+final class WishModel: Identifiable, Hashable {
     /// Unique identifier for the wish.
-    var id: UUID
+    @Attribute(.unique) var id: UUID
     /// The user-facing title.
     var title: String
     /// Optional notes about the wish.
@@ -26,8 +28,8 @@ struct Wish: Identifiable, Hashable {
     /// Last update timestamp.
     var updatedAt: Date
 
-    /// Tags associated with the wish.
-    var tags: [Tag] = []
+    /// Tags associated with the wish. Removing the wish deletes its tags.
+    @Relationship(deleteRule: .cascade) var tags: [Tag] = []
 
     /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {
@@ -54,19 +56,36 @@ struct Wish: Identifiable, Hashable {
         self.updatedAt = updatedAt
         self.tags = tags
     }
+}
 
-    /// Creates a ``Wish`` from a ``WishModel``.
-    init(_ model: WishModel) {
+extension WishModel {
+    /// Creates a ``WishModel`` from a ``Wish``.
+    convenience init(_ wish: Wish) {
         self.init(
-            id: model.id,
-            title: model.title,
-            notes: model.notes,
-            dueDate: model.dueDate,
-            isCompleted: model.isCompleted,
-            priority: model.priority,
-            createdAt: model.createdAt,
-            updatedAt: model.updatedAt,
-            tags: model.tags
+            id: wish.id,
+            title: wish.title,
+            notes: wish.notes,
+            dueDate: wish.dueDate,
+            isCompleted: wish.isCompleted,
+            priority: wish.priority,
+            createdAt: wish.createdAt,
+            updatedAt: wish.updatedAt,
+            tags: wish.tags
+        )
+    }
+
+    /// Returns a plain ``Wish`` representation.
+    var wish: Wish {
+        .init(
+            id: id,
+            title: title,
+            notes: notes,
+            dueDate: dueDate,
+            isCompleted: isCompleted,
+            priority: priority,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            tags: tags
         )
     }
 }
