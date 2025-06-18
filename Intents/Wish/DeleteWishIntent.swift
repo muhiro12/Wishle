@@ -1,8 +1,9 @@
 import AppIntents
 import SwiftData
+import SwiftUtilities
 
 @AppIntent
-struct DeleteWishIntent {
+struct DeleteWishIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Delete Wish"
 
     @Environment(\.modelContext) private var modelContext
@@ -14,13 +15,19 @@ struct DeleteWishIntent {
         Summary("Delete wish \(\.$id)")
     }
 
-    func perform() async throws -> some IntentResult {
+    typealias Input = (context: ModelContext, id: String)
+    typealias Output = Void
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (context, id) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return .result()
-        }
-        modelContext.delete(model)
-        try modelContext.save()
+        guard let model = try context.fetch(descriptor).first else { return }
+        context.delete(model)
+        try context.save()
+    }
+
+    func perform() async throws -> some IntentResult {
+        try await Self.perform((context: modelContext, id: id))
         return .result()
     }
 }

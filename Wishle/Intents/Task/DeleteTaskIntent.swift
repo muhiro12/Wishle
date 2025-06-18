@@ -6,8 +6,9 @@
 //
 
 import AppIntents
+import SwiftUtilities
 
-struct DeleteTaskIntent: AppIntent {
+struct DeleteTaskIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Delete Task"
 
     /// Service injected from the application context.
@@ -20,12 +21,19 @@ struct DeleteTaskIntent: AppIntent {
         Summary("Delete task \(\.$id)")
     }
 
-    func perform() async throws -> some IntentResult {
-        guard let uuid = UUID(uuidString: id),
-              let task = service.task(id: uuid) else {
-            return .result()
+    typealias Input = (service: TaskServiceProtocol, id: String)
+    typealias Output = Void
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (service, id) = input
+        guard let uuid = UUID(uuidString: id), let task = service.task(id: uuid) else {
+            return
         }
         try await service.deleteTask(task)
+    }
+
+    func perform() async throws -> some IntentResult {
+        try await Self.perform((service: service, id: id))
         return .result()
     }
 }

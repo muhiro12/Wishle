@@ -6,8 +6,9 @@
 //
 
 import AppIntents
+import SwiftUtilities
 
-struct AddTaskIntent: AppIntent {
+struct AddTaskIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Add Task"
 
     /// Service injected from the application context.
@@ -33,8 +34,16 @@ struct AddTaskIntent: AppIntent {
         }
     }
 
-    func perform() async throws -> some IntentResult {
+    typealias Input = (service: TaskServiceProtocol, title: String, notes: String?, dueDate: Date?, priority: Int)
+    typealias Output = Void
+
+    static func perform(_ input: Input) async throws -> Output {
+        let (service, title, notes, dueDate, priority) = input
         _ = try await service.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
+    }
+
+    func perform() async throws -> some IntentResult {
+        try await Self.perform((service: service, title: title, notes: notes, dueDate: dueDate, priority: priority))
         return .result()
     }
 }
