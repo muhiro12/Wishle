@@ -12,8 +12,6 @@ import SwiftUtilities
 struct AddWishIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Add Wish"
 
-    /// Service injected from the application context.
-    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "Title")
@@ -41,8 +39,15 @@ struct AddWishIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws -> Wish {
         let (context, title, notes, dueDate, priority) = input
-        let service = WishService(modelContext: context)
-        return try await service.addWish(title: title, notes: notes, dueDate: dueDate, priority: priority)
+        let model = WishModel(
+            title: title,
+            notes: notes,
+            dueDate: dueDate,
+            priority: priority
+        )
+        context.insert(model)
+        try context.save()
+        return model.wish
     }
 
     @MainActor
