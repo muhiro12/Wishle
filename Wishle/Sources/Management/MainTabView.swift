@@ -19,6 +19,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Wishes", systemImage: "list.bullet")
                 }
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape")
+                }
         }
     }
 }
