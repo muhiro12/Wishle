@@ -63,7 +63,8 @@ struct RemindersImporter {
                         priority: wish.priority
                     ))
                     // Update tags directly
-                    if let model = try? modelContext.fetch(FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == wish.id })).first {
+                    let id = wish.id
+                    if let model = try? modelContext.fetch(FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })).first {
                         model.tags.append(TagModel(tag))
                         try modelContext.save()
                     }

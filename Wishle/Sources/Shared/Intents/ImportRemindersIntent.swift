@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import SwiftData
 import SwiftUtilities
 
 struct ImportRemindersIntent: AppIntent, IntentPerformer {
