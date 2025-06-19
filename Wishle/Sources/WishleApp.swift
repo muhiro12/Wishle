@@ -11,7 +11,6 @@ import SwiftUI
 @main
 struct WishleApp: App {
     @State private var subscriptionManager = SubscriptionManager.shared
-    @State private var isPaywallPresented = false
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
@@ -34,17 +33,15 @@ struct WishleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
-                MainTabView()
-                    .sheet(isPresented: $isPaywallPresented) {
-                        PaywallView()
-                    }
-                    .task {
-                        await subscriptionManager.load()
-                        isPaywallPresented = !subscriptionManager.isSubscribed
-                    }
-            } else {
-                OnboardingFlow()
+            Group {
+                if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
+                    MainTabView()
+                } else {
+                    OnboardingFlow()
+                }
+            }
+            .task {
+                await subscriptionManager.load()
             }
         }
         .modelContainer(sharedModelContainer)
