@@ -12,8 +12,6 @@ import SwiftUtilities
 struct DeleteWishIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Delete Wish"
 
-    /// Service injected from the application context.
-    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "ID")
@@ -28,11 +26,12 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws {
         let (context, id) = input
-        let service = WishService(modelContext: context)
-        guard let wish = service.wish(id: id) else {
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
+        guard let model = try context.fetch(descriptor).first else {
             return
         }
-        try await service.deleteWish(wish)
+        context.delete(model)
+        try context.save()
     }
 
     @MainActor

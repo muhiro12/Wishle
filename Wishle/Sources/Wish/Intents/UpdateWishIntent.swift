@@ -12,8 +12,6 @@ import SwiftUtilities
 struct UpdateWishIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Update Wish"
 
-    /// Service injected from the application context.
-    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "ID")
@@ -49,16 +47,17 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
-        let service = WishService(modelContext: context)
-        guard var wish = service.wish(id: id) else {
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
+        guard let model = try context.fetch(descriptor).first else {
             return
         }
-        if let title { wish.title = title }
-        if let notes { wish.notes = notes }
-        if let dueDate { wish.dueDate = dueDate }
-        if let isCompleted { wish.isCompleted = isCompleted }
-        if let priority { wish.priority = priority }
-        try await service.updateWish(wish)
+        if let title { model.title = title }
+        if let notes { model.notes = notes }
+        if let dueDate { model.dueDate = dueDate }
+        if let isCompleted { model.isCompleted = isCompleted }
+        if let priority { model.priority = priority }
+        model.updatedAt = .now
+        try context.save()
     }
 
     @MainActor

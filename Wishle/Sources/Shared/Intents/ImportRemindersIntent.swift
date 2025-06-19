@@ -11,7 +11,7 @@ import SwiftUtilities
 struct ImportRemindersIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Import Reminders"
 
-    var importer: RemindersImporter = .init()
+    @Dependency private var modelContainer: ModelContainer
 
     typealias Input = RemindersImporter
     typealias Output = Void
@@ -22,6 +22,7 @@ struct ImportRemindersIntent: AppIntent, IntentPerformer {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        let importer: RemindersImporter = .init(modelContext: modelContainer.mainContext)
         try await Self.perform(importer)
         return .result()
     }

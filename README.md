@@ -4,7 +4,7 @@ Wishle is a lightweight task manager that focuses on what you **wish** to accomp
 
 ## Features
 
-- Service-oriented architecture for easy maintainability
+- AppIntent-based command architecture
 - SwiftData storage with optional iCloud sync
 - Widgets including "Next Up" to highlight your upcoming task
 - Foundation model integration for on-device suggestions
