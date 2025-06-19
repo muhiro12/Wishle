@@ -15,7 +15,8 @@ struct WishleApp: App {
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
-            Item.self
+            WishModel.self,
+            TagModel.self
         ])
         let configuration: ModelConfiguration
         if subscriptionManager.isSubscribed {
@@ -34,7 +35,7 @@ struct WishleApp: App {
     var body: some Scene {
         WindowGroup {
             if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
-                ContentView()
+                MainTabView()
                     .sheet(isPresented: $isPaywallPresented) {
                         PaywallView()
                     }
