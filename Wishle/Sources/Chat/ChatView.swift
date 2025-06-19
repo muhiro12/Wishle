@@ -59,7 +59,7 @@ struct ChatView: View {
     private func send() {
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        let userMessage = .init(text: trimmed, isUser: true)
+        let userMessage = ChatMessage(text: trimmed, isUser: true)
         messages.append(userMessage)
         inputText = ""
 
@@ -77,7 +77,7 @@ struct ChatView: View {
             } else {
                 responseText = "Failed to add wish"
             }
-            let botMessage = .init(text: responseText, isUser: false)
+            let botMessage = ChatMessage(text: responseText, isUser: false)
             messages.append(botMessage)
         }
     }
@@ -87,4 +87,3 @@ struct ChatView: View {
     ChatView()
         .modelContainer(for: WishModel.self, inMemory: true)
 }
-

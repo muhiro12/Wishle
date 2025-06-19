@@ -5,6 +5,7 @@
 //  Created by Codex on 2025/06/19.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MainTabView: View {
@@ -26,4 +27,3 @@ struct MainTabView: View {
     MainTabView()
         .modelContainer(for: WishModel.self, inMemory: true)
 }
-

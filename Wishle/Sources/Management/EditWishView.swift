@@ -73,10 +73,9 @@ struct EditWishView: View {
 }
 
 #Preview {
-    let container = try? ModelContainer(for: WishModel.self)
+    let container = try! ModelContainer(for: WishModel.self)
     let sample = WishModel(title: "Sample")
-    container?.mainContext.insert(sample)
+    container.mainContext.insert(sample)
     return EditWishView(wishModel: sample)
-        .modelContainer(container ?? .init())
+        .modelContainer(container)
 }
-
