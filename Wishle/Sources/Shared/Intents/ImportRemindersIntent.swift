@@ -14,17 +14,17 @@ struct ImportRemindersIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    typealias Input = RemindersImporter
+    typealias Input = ModelContext
     typealias Output = Void
 
-    static func perform(_ input: RemindersImporter) async throws {
-        try await input.import()
+    static func perform(_ context: ModelContext) async throws {
+        let importer: RemindersImporter = .init(modelContext: context)
+        try await importer.import()
     }
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        let importer: RemindersImporter = .init(modelContext: modelContainer.mainContext)
-        try await Self.perform(importer)
+        try await Self.perform(modelContainer.mainContext)
         return .result()
     }
 }
