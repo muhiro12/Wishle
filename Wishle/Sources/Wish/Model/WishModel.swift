@@ -12,7 +12,7 @@ import SwiftData
 @Model
 final class WishModel: Identifiable, Hashable {
     /// Unique identifier for the wish.
-    @Attribute(.unique) var id: UUID
+    @Attribute(.unique) var id: String
     /// The user-facing title.
     var title: String
     /// Optional notes about the wish.
@@ -29,7 +29,7 @@ final class WishModel: Identifiable, Hashable {
     var updatedAt: Date
 
     /// Tags associated with the wish. Removing the wish deletes its tags.
-    @Relationship(deleteRule: .cascade) var tags: [Tag] = []
+    @Relationship(deleteRule: .cascade) var tags: [TagModel] = []
 
     /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {
@@ -37,7 +37,7 @@ final class WishModel: Identifiable, Hashable {
         return dueDate < .now && !isCompleted
     }
 
-    init(id: UUID = .init(),
+    init(id: String = UUID().uuidString,
          title: String,
          notes: String? = nil,
          dueDate: Date? = nil,
@@ -45,7 +45,7 @@ final class WishModel: Identifiable, Hashable {
          priority: Int = 0,
          createdAt: Date = .now,
          updatedAt: Date = .now,
-         tags: [Tag] = []) {
+         tags: [TagModel] = []) {
         self.id = id
         self.title = title
         self.notes = notes
@@ -70,7 +70,7 @@ extension WishModel {
             priority: wish.priority,
             createdAt: wish.createdAt,
             updatedAt: wish.updatedAt,
-            tags: wish.tags
+            tags: wish.tags.map(TagModel.init)
         )
     }
 
@@ -85,7 +85,7 @@ extension WishModel {
             priority: priority,
             createdAt: createdAt,
             updatedAt: updatedAt,
-            tags: tags
+            tags: tags.map(\.tag)
         )
     }
 }

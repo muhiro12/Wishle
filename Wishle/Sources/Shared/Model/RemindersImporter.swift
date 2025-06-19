@@ -35,7 +35,7 @@ struct RemindersImporter {
                        lastModified > existing.updatedAt {
                         try await UpdateTaskIntent.perform((
                             context: service.context,
-                            id: existing.id.uuidString,
+                            id: existing.id,
                             title: title,
                             notes: notes,
                             dueDate: dueDate,
@@ -61,14 +61,14 @@ struct RemindersImporter {
 
     private func fetchOrCreateTag(name: String) throws -> Tag {
         let lowercasedName = name.lowercased()
-        let descriptor = FetchDescriptor<Tag>(predicate: #Predicate { $0.name == lowercasedName })
-        if let tag = try service.context.fetch(descriptor).first {
-            return tag
+        let descriptor = FetchDescriptor<TagModel>(predicate: #Predicate { $0.name == lowercasedName })
+        if let model = try service.context.fetch(descriptor).first {
+            return model.tag
         }
-        let tag = Tag(name: name)
-        service.context.insert(tag)
+        let model = TagModel(name: name)
+        service.context.insert(model)
         try service.context.save()
-        return tag
+        return model.tag
     }
 
     private func findTask(for reminder: EKReminder, tag: Tag) throws -> Wish? {

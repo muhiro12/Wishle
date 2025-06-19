@@ -50,7 +50,7 @@ struct UpdateTaskIntent: AppIntent, IntentPerformer {
     static func perform(_ input: Input) async throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
         let service = TaskService(modelContext: context)
-        guard let uuid = UUID(uuidString: id), var task = service.task(id: uuid) else {
+        guard var task = service.task(id: id) else {
             return
         }
         if let title { task.title = title }

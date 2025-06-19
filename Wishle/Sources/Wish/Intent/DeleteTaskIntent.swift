@@ -29,7 +29,7 @@ struct DeleteTaskIntent: AppIntent, IntentPerformer {
     static func perform(_ input: Input) async throws {
         let (context, id) = input
         let service = TaskService(modelContext: context)
-        guard let uuid = UUID(uuidString: id), let task = service.task(id: uuid) else {
+        guard let task = service.task(id: id) else {
             return
         }
         try await service.deleteTask(task)

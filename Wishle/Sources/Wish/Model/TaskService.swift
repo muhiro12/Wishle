@@ -15,7 +15,7 @@ protocol TaskServiceProtocol {
     func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish
 
     /// Finds a task for the given identifier.
-    func task(id: UUID) -> Wish?
+    func task(id: String) -> Wish?
 
     /// Persists updates to the provided task.
     func updateTask(_ task: Wish) async throws
@@ -38,7 +38,7 @@ final class TaskService: TaskServiceProtocol {
         do {
             let schema = Schema([
                 WishModel.self,
-                Tag.self
+                TagModel.self
             ])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             let container = try ModelContainer(for: schema, configurations: [configuration])
@@ -59,7 +59,8 @@ final class TaskService: TaskServiceProtocol {
         self.modelContext = modelContext
     }
 
-    func task(id: UUID) -> Wish? {
+    func task(id: String) -> Wish? {
+        let id = id
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         guard let model = try? modelContext.fetch(descriptor).first else {
             return nil
@@ -92,7 +93,7 @@ final class TaskService: TaskServiceProtocol {
         model.isCompleted = task.isCompleted
         model.priority = task.priority
         model.updatedAt = .now
-        model.tags = task.tags
+        model.tags = task.tags.map(TagModel.init)
         try modelContext.save()
     }
 
