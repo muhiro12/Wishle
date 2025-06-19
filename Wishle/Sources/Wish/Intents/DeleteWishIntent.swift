@@ -1,5 +1,5 @@
 //
-//  DeleteTaskIntent.swift
+//  DeleteWishIntent.swift
 //  Wishle
 //
 //  Created by Hiromu Nakano on 2025/06/17.
@@ -9,18 +9,18 @@ import AppIntents
 import SwiftData
 import SwiftUtilities
 
-struct DeleteTaskIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Delete Task"
+struct DeleteWishIntent: AppIntent, IntentPerformer {
+    static var title: LocalizedStringResource = "Delete Wish"
 
     /// Service injected from the application context.
-    var service: TaskServiceProtocol = TaskService.shared
+    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "ID")
     private var id: String
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Delete task \(\.$id)")
+        Summary("Delete wish \(\.$id)")
     }
 
     typealias Input = (context: ModelContext, id: String)
@@ -28,11 +28,11 @@ struct DeleteTaskIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws {
         let (context, id) = input
-        let service = TaskService(modelContext: context)
-        guard let task = service.task(id: id) else {
+        let service = WishService(modelContext: context)
+        guard let wish = service.wish(id: id) else {
             return
         }
-        try await service.deleteTask(task)
+        try await service.deleteWish(wish)
     }
 
     @MainActor

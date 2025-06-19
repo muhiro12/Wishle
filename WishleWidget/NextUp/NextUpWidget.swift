@@ -11,16 +11,16 @@ import WidgetKit
 
 struct NextUpProvider: TimelineProvider {
     func placeholder(in _: Context) -> NextUpEntry {
-        .init(date: .now, task: .placeholder)
+        .init(date: .now, wish: .placeholder)
     }
 
     func getSnapshot(in _: Context, completion: @escaping (NextUpEntry) -> Void) {
-        completion(.init(date: .now, task: .placeholder))
+        completion(.init(date: .now, wish: .placeholder))
     }
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<NextUpEntry>) -> Void) {
-        let task = TaskDataStore.shared.nextUpTask()
-        let entry = NextUpEntry(date: .now, task: task)
+        let wish = WishDataStore.shared.nextUpWish()
+        let entry = NextUpEntry(date: .now, wish: wish)
         let timeline = Timeline(entries: [entry], policy: .after(.now.advanced(by: 60 * 15)))
         completion(timeline)
     }
@@ -28,7 +28,7 @@ struct NextUpProvider: TimelineProvider {
 
 struct NextUpEntry: TimelineEntry {
     let date: Date
-    let task: WidgetTask?
+    let wish: WidgetWish?
 }
 
 struct NextUpWidgetEntryView: View {
@@ -47,15 +47,15 @@ struct NextUpWidgetEntryView: View {
 
     private var content: some View {
         VStack(alignment: .leading) {
-            if let task = entry.task {
-                Text(task.title)
+            if let wish = entry.wish {
+                Text(wish.title)
                     .font(.headline)
-                if let dueDate = task.dueDate {
+                if let dueDate = wish.dueDate {
                     Text(dueDate, style: .date)
                         .font(.caption)
                 }
             } else {
-                Text("No tasks")
+                Text("No wishes")
             }
         }
     }
@@ -68,7 +68,7 @@ struct NextUpWidget: Widget {
         }
         .supportedFamilies([.systemSmall, .accessoryInline])
         .configurationDisplayName("Next Up")
-        .description("Shows your next uncompleted task")
+        .description("Shows your next uncompleted wish")
     }
 }
 
@@ -76,6 +76,6 @@ struct NextUpWidget: Widget {
 #Preview(as: .systemSmall) {
     NextUpWidget()
 } timeline: {
-    NextUpEntry(date: .now, task: .placeholder)
+    NextUpEntry(date: .now, wish: .placeholder)
 }
 #endif

@@ -2,18 +2,18 @@ import Foundation
 import FoundationModels
 
 @Generable
-private struct TaskSuggestion: Decodable {
+private struct WishSuggestion: Decodable {
     var title: String
     var notes: String?
 }
 
-/// The context used for generating task suggestions.
+/// The context used for generating wish suggestions.
 struct SuggestionContext: Sendable {
     /// Free-form text describing the user's situation.
     var text: String
 }
 
-/// Service that generates task suggestions using an on-device foundation model.
+/// Service that generates wish suggestions using an on-device foundation model.
 @MainActor
 final class AISuggestionService {
     static let shared = AISuggestionService()
@@ -31,10 +31,10 @@ final class AISuggestionService {
         }
     }
 
-    /// Generates task suggestions for the provided context.
-    func suggestTasks(for context: SuggestionContext) async throws -> [Wish] {
+    /// Generates wish suggestions for the provided context.
+    func suggestWishes(for context: SuggestionContext) async throws -> [Wish] {
         let prompt = promptTemplate.replacingOccurrences(of: "{{context}}", with: context.text)
-        let response = try await session.respond(to: prompt, generating: [TaskSuggestion].self)
+        let response = try await session.respond(to: prompt, generating: [WishSuggestion].self)
         return response.content.map { Wish(title: $0.title, notes: $0.notes) }
     }
 }
