@@ -14,14 +14,14 @@ struct NextUpLiveActivityAttributes: ActivityAttributes {
         var remainingTime: TimeInterval
     }
 
-    var taskID: UUID
+    var wishID: UUID
 }
 
 struct NextUpLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: NextUpLiveActivityAttributes.self) { context in
             VStack(alignment: .leading) {
-                Text("Next Task")
+                Text("Next Wish")
                 Text(
                     timerInterval: Date()...Date().addingTimeInterval(context.state.remainingTime),
                     countsDown: true
@@ -53,7 +53,7 @@ struct NextUpLiveActivity: Widget {
 #if DEBUG
 extension NextUpLiveActivityAttributes {
     fileprivate static var preview: NextUpLiveActivityAttributes {
-        .init(taskID: .init())
+        .init(wishID: .init())
     }
 }
 

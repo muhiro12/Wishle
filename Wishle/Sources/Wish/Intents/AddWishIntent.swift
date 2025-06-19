@@ -1,5 +1,5 @@
 //
-//  AddTaskIntent.swift
+//  AddWishIntent.swift
 //  Wishle
 //
 //  Created by Hiromu Nakano on 2025/06/17.
@@ -9,11 +9,11 @@ import AppIntents
 import SwiftData
 import SwiftUtilities
 
-struct AddTaskIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Add Task"
+struct AddWishIntent: AppIntent, IntentPerformer {
+    static var title: LocalizedStringResource = "Add Wish"
 
     /// Service injected from the application context.
-    var service: TaskServiceProtocol = TaskService.shared
+    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "Title")
@@ -41,19 +41,19 @@ struct AddTaskIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws -> Wish {
         let (context, title, notes, dueDate, priority) = input
-        let service = TaskService(modelContext: context)
-        return try await service.addTask(title: title, notes: notes, dueDate: dueDate, priority: priority)
+        let service = WishService(modelContext: context)
+        return try await service.addWish(title: title, notes: notes, dueDate: dueDate, priority: priority)
     }
 
     @MainActor
     func perform() async throws -> some ReturnsValue<String> {
-        let task = try await Self.perform((
+        let wish = try await Self.perform((
             context: modelContainer.mainContext,
             title: title,
             notes: notes,
             dueDate: dueDate,
             priority: priority
         ))
-        return .result(value: task.title)
+        return .result(value: wish.title)
     }
 }

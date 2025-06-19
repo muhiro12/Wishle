@@ -1,5 +1,5 @@
 //
-//  UpdateTaskIntent.swift
+//  UpdateWishIntent.swift
 //  Wishle
 //
 //  Created by Hiromu Nakano on 2025/06/17.
@@ -9,11 +9,11 @@ import AppIntents
 import SwiftData
 import SwiftUtilities
 
-struct UpdateTaskIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Update Task"
+struct UpdateWishIntent: AppIntent, IntentPerformer {
+    static var title: LocalizedStringResource = "Update Wish"
 
     /// Service injected from the application context.
-    var service: TaskServiceProtocol = TaskService.shared
+    var service: WishServiceProtocol = WishService.shared
     @Dependency private var modelContainer: ModelContainer
 
     @Parameter(title: "ID")
@@ -35,7 +35,7 @@ struct UpdateTaskIntent: AppIntent, IntentPerformer {
     private var priority: Int?
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Update task \(\.$id)") {
+        Summary("Update wish \(\.$id)") {
             \.$title
             \.$notes
             \.$dueDate
@@ -49,16 +49,16 @@ struct UpdateTaskIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
-        let service = TaskService(modelContext: context)
-        guard var task = service.task(id: id) else {
+        let service = WishService(modelContext: context)
+        guard var wish = service.wish(id: id) else {
             return
         }
-        if let title { task.title = title }
-        if let notes { task.notes = notes }
-        if let dueDate { task.dueDate = dueDate }
-        if let isCompleted { task.isCompleted = isCompleted }
-        if let priority { task.priority = priority }
-        try await service.updateTask(task)
+        if let title { wish.title = title }
+        if let notes { wish.notes = notes }
+        if let dueDate { wish.dueDate = dueDate }
+        if let isCompleted { wish.isCompleted = isCompleted }
+        if let priority { wish.priority = priority }
+        try await service.updateWish(wish)
     }
 
     @MainActor

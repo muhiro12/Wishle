@@ -13,7 +13,7 @@ struct SwipeToCompleteTip: Tip {
         Text("Swipe to complete")
     }
     var message: Text? {
-        Text("Swipe a task to mark it completed.")
+        Text("Swipe a wish to mark it completed.")
     }
 }
 
@@ -22,7 +22,7 @@ struct LongPressQuickEditTip: Tip {
         Text("Long-press for quick edit")
     }
     var message: Text? {
-        Text("Long press on a task to edit it.")
+        Text("Long press on a wish to edit it.")
     }
 }
 

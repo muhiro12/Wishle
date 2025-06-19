@@ -1,15 +1,15 @@
 import Foundation
 
-struct TaskDataStore {
+struct WishDataStore {
     static let shared = Self()
 
     private let defaults = UserDefaults(suiteName: "group.com.muhiro12.wishle")
-    private let key = "nextUpTask"
+    private let key = "nextUpWish"
 
-    func nextUpTask() -> WidgetTask? {
+    func nextUpWish() -> WidgetWish? {
         guard let defaults, let data = defaults.data(forKey: key) else {
             return nil
         }
-        return try? JSONDecoder().decode(WidgetTask.self, from: data)
+        return try? JSONDecoder().decode(WidgetWish.self, from: data)
     }
 }

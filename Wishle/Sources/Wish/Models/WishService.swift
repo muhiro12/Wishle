@@ -1,5 +1,5 @@
 //
-//  TaskService.swift
+//  WishService.swift
 //  Wishle
 //
 //  Created by Hiromu Nakano on 2025/06/17.
@@ -9,32 +9,32 @@ import Foundation
 import SwiftData
 
 /// A protocol that defines operations for managing `Wish` instances.
-protocol TaskServiceProtocol {
-    /// Adds a new task and persists it.
-    /// - Returns: The created task instance.
-    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish
+protocol WishServiceProtocol {
+    /// Adds a new wish and persists it.
+    /// - Returns: The created wish instance.
+    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) async throws -> Wish
 
-    /// Finds a task for the given identifier.
-    func task(id: String) -> Wish?
+    /// Finds a wish for the given identifier.
+    func wish(id: String) -> Wish?
 
-    /// Persists updates to the provided task.
-    func updateTask(_ task: Wish) async throws
+    /// Persists updates to the provided wish.
+    func updateWish(_ wish: Wish) async throws
 
-    /// Deletes the task from persistence.
-    func deleteTask(_ task: Wish) async throws
+    /// Deletes the wish from persistence.
+    func deleteWish(_ wish: Wish) async throws
 
-    /// Returns the next task that is not completed, ordered by due date then priority.
-    func nextUpTask() -> Wish?
+    /// Returns the next wish that is not completed, ordered by due date then priority.
+    func nextUpWish() -> Wish?
 
     /// Underlying SwiftData context for advanced operations.
     var context: ModelContext { get }
 }
 
-/// Default implementation of ``TaskServiceProtocol`` using SwiftData.
+/// Default implementation of ``WishServiceProtocol`` using SwiftData.
 @MainActor
-final class TaskService: TaskServiceProtocol {
+final class WishService: WishServiceProtocol {
     /// Shared singleton instance used when no dependency is injected.
-    static var shared: TaskService = {
+    static var shared: WishService = {
         do {
             let schema = Schema([
                 WishModel.self,
@@ -59,7 +59,7 @@ final class TaskService: TaskServiceProtocol {
         self.modelContext = modelContext
     }
 
-    func task(id: String) -> Wish? {
+    func wish(id: String) -> Wish? {
         let id = id
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         guard let model = try? modelContext.fetch(descriptor).first else {
@@ -68,7 +68,7 @@ final class TaskService: TaskServiceProtocol {
         return model.wish
     }
 
-    func addTask(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish {
+    func addWish(title: String, notes: String?, dueDate: Date?, priority: Int) throws -> Wish {
         let model = WishModel(
             title: title,
             notes: notes,
@@ -80,25 +80,25 @@ final class TaskService: TaskServiceProtocol {
         return model.wish
     }
 
-    func updateTask(_ task: Wish) throws {
-        let id = task.id
+    func updateWish(_ wish: Wish) throws {
+        let id = wish.id
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         guard let model = try modelContext.fetch(descriptor).first else {
             return
         }
 
-        model.title = task.title
-        model.notes = task.notes
-        model.dueDate = task.dueDate
-        model.isCompleted = task.isCompleted
-        model.priority = task.priority
+        model.title = wish.title
+        model.notes = wish.notes
+        model.dueDate = wish.dueDate
+        model.isCompleted = wish.isCompleted
+        model.priority = wish.priority
         model.updatedAt = .now
-        model.tags = task.tags.map(TagModel.init)
+        model.tags = wish.tags.map(TagModel.init)
         try modelContext.save()
     }
 
-    func deleteTask(_ task: Wish) throws {
-        let id = task.id
+    func deleteWish(_ wish: Wish) throws {
+        let id = wish.id
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
         if let model = try modelContext.fetch(descriptor).first {
             modelContext.delete(model)
@@ -106,13 +106,13 @@ final class TaskService: TaskServiceProtocol {
         try modelContext.save()
     }
 
-    func nextUpTask() -> Wish? {
+    func nextUpWish() -> Wish? {
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { !$0.isCompleted })
         guard let models = try? modelContext.fetch(descriptor) else {
             return nil
         }
-        let tasks = models.map(\.wish)
-        return tasks.sorted { lhs, rhs in
+        let wishes = models.map(\.wish)
+        return wishes.sorted { lhs, rhs in
             switch (lhs.dueDate, rhs.dueDate) {
             case let (lhsDate?, rhsDate?):
                 if lhsDate != rhsDate {

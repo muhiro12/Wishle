@@ -11,10 +11,10 @@ import SwiftData
 @MainActor
 struct RemindersExporter {
     private let eventStore: EKEventStore
-    private let service: TaskServiceProtocol
+    private let service: WishServiceProtocol
 
     init(eventStore: EKEventStore = .init(),
-         service: TaskServiceProtocol) {
+         service: WishServiceProtocol) {
         self.eventStore = eventStore
         self.service = service
     }
@@ -23,18 +23,18 @@ struct RemindersExporter {
         try await eventStore.requestFullAccessToReminders()
         let models = try service.context.fetch(FetchDescriptor<WishModel>())
         for model in models {
-            let task = model.wish
-            for tag in task.tags {
+            let wish = model.wish
+            for tag in wish.tags {
                 let calendar = try fetchOrCreateCalendar(name: tag.name)
-                if let reminder = try await findReminder(for: task, in: calendar) {
+                if let reminder = try await findReminder(for: wish, in: calendar) {
                     let lastModified = reminder.lastModifiedDate ?? .distantPast
-                    if task.updatedAt > lastModified {
-                        update(reminder: reminder, from: task, calendar: calendar)
+                    if wish.updatedAt > lastModified {
+                        update(reminder: reminder, from: wish, calendar: calendar)
                         try eventStore.save(reminder, commit: false)
                     }
                 } else {
                     let reminder = EKReminder(eventStore: eventStore)
-                    update(reminder: reminder, from: task, calendar: calendar)
+                    update(reminder: reminder, from: wish, calendar: calendar)
                     try eventStore.save(reminder, commit: false)
                 }
             }
@@ -59,7 +59,7 @@ struct RemindersExporter {
         return calendar
     }
 
-    private func findReminder(for task: Wish, in calendar: EKCalendar) async throws -> EKReminder? {
+    private func findReminder(for wish: Wish, in calendar: EKCalendar) async throws -> EKReminder? {
         let predicate = eventStore.predicateForReminders(in: [calendar])
         let reminders: [EKReminder] = try await withCheckedThrowingContinuation { continuation in
             eventStore.fetchReminders(matching: predicate) { fetchedReminders in
@@ -71,22 +71,22 @@ struct RemindersExporter {
             }
         }
         return reminders.first { reminder in
-            reminder.title == task.title && reminder.dueDateComponents?.date == task.dueDate
+            reminder.title == wish.title && reminder.dueDateComponents?.date == wish.dueDate
         }
     }
 
-    private func update(reminder: EKReminder, from task: Wish, calendar: EKCalendar) {
+    private func update(reminder: EKReminder, from wish: Wish, calendar: EKCalendar) {
         reminder.calendar = calendar
-        reminder.title = task.title
-        reminder.notes = task.notes
-        reminder.priority = Int(task.priority)
-        if let dueDate = task.dueDate {
+        reminder.title = wish.title
+        reminder.notes = wish.notes
+        reminder.priority = Int(wish.priority)
+        if let dueDate = wish.dueDate {
             reminder.dueDateComponents = Calendar.current.dateComponents([
                 .year, .month, .day, .hour, .minute
             ], from: dueDate)
         } else {
             reminder.dueDateComponents = nil
         }
-        reminder.isCompleted = task.isCompleted
+        reminder.isCompleted = wish.isCompleted
     }
 }

@@ -11,11 +11,11 @@ import SwiftData
 @MainActor
 struct RemindersImporter {
     private let eventStore: EKEventStore
-    private let service: TaskServiceProtocol
+    private let service: WishServiceProtocol
 
-    init(eventStore: EKEventStore = .init(), service: TaskServiceProtocol? = nil) {
+    init(eventStore: EKEventStore = .init(), service: WishServiceProtocol? = nil) {
         self.eventStore = eventStore
-        self.service = service ?? TaskService.shared
+        self.service = service ?? WishService.shared
     }
 
     func `import`() async throws {
@@ -30,10 +30,10 @@ struct RemindersImporter {
                 let dueDate = reminder.dueDateComponents?.date
                 let notes = reminder.notes
                 let priority = Int(reminder.priority)
-                if let existing = try findTask(for: reminder, tag: tag) {
+                if let existing = try findWish(for: reminder, tag: tag) {
                     if let lastModified = reminder.lastModifiedDate,
                        lastModified > existing.updatedAt {
-                        try await UpdateTaskIntent.perform((
+                        try await UpdateWishIntent.perform((
                             context: service.context,
                             id: existing.id,
                             title: title,
@@ -44,16 +44,16 @@ struct RemindersImporter {
                         ))
                     }
                 } else {
-                    var task = try await AddTaskIntent.perform((
+                    var wish = try await AddWishIntent.perform((
                         context: service.context,
                         title: title,
                         notes: notes,
                         dueDate: dueDate,
                         priority: priority
                     ))
-                    task.isCompleted = reminder.isCompleted
-                    task.tags.append(tag)
-                    try await service.updateTask(task)
+                    wish.isCompleted = reminder.isCompleted
+                    wish.tags.append(tag)
+                    try await service.updateWish(wish)
                 }
             }
         }
@@ -71,7 +71,7 @@ struct RemindersImporter {
         return model.tag
     }
 
-    private func findTask(for reminder: EKReminder, tag: Tag) throws -> Wish? {
+    private func findWish(for reminder: EKReminder, tag: Tag) throws -> Wish? {
         guard let title = reminder.title else { return nil }
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.title == title })
         let models = try service.context.fetch(descriptor)

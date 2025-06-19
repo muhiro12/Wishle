@@ -1,14 +1,14 @@
 import Foundation
 
-struct WidgetTask: Identifiable, Codable, Hashable {
+struct WidgetWish: Identifiable, Codable, Hashable {
     var id: UUID
     var title: String
     var dueDate: Date?
     var priority: Int
 }
 
-extension WidgetTask {
-    static var placeholder: WidgetTask {
+extension WidgetWish {
+    static var placeholder: WidgetWish {
         .init(id: .init(), title: "Sample", dueDate: .now.addingTimeInterval(3_600), priority: 0)
     }
 }
