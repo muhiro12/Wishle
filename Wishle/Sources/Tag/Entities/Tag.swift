@@ -33,7 +33,7 @@ struct Tag: Identifiable, Hashable {
     }
 
     /// Sample tags for preview usage.
-    static func sample() -> [Tag] {
+    static func sample() -> [Self] {
         [
             .init(name: "home"),
             .init(name: "work"),

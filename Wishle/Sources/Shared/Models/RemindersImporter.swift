@@ -76,7 +76,7 @@ struct RemindersImporter {
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.title == title })
         let models = try service.context.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
-        return models.map { $0.wish }.first { $0.dueDate == dueDate && $0.tags.contains(tag) }
+        return models.map(\.wish).first { $0.dueDate == dueDate && $0.tags.contains(tag) }
     }
 
     private func requestFullAccessToRemindersAsync() async throws {
