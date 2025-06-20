@@ -35,6 +35,8 @@ final class AISuggestionService {
     func suggestWishes(for context: SuggestionContext) async throws -> [Wish] {
         let prompt = promptTemplate.replacingOccurrences(of: "{{context}}", with: context.text)
         let response = try await session.respond(to: prompt, generating: [WishSuggestion].self)
-        return response.content.map { Wish(title: $0.title, notes: $0.notes) }
+        return response.content.map { suggestion in
+            Wish(title: suggestion.title, notes: suggestion.notes)
+        }
     }
 }
