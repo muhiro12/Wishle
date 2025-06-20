@@ -17,12 +17,12 @@ private struct RandomWishSuggestion: Decodable {
 }
 
 struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Suggest Wish from Random"
+    typealias Input = ModelContext
+    typealias Output = Wish
 
     @Dependency private var modelContainer: ModelContainer
 
-    typealias Input = ModelContext
-    typealias Output = Wish
+    static var title: LocalizedStringResource = "Suggest Wish from Random"
 
     static func perform(_ context: ModelContext) async throws -> Wish {
         var samples: [Wish] = []
