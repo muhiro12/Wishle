@@ -25,10 +25,10 @@ struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
     typealias Output = Wish
 
     static func perform(_ context: ModelContext) async throws -> Wish {
-        let descriptor = FetchDescriptor<WishModel>(
-            sortBy: [SortDescriptor(\.createdAt, order: .reverse)],
-            fetchLimit: 5
+        var descriptor = FetchDescriptor<WishModel>(
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
+        descriptor.fetchLimit = 5
         let models = try context.fetch(descriptor)
         let recent = models.map(\.wish)
         let prompt = recent.map { "- \($0.title)" }.joined(separator: "\n")
