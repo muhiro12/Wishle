@@ -99,11 +99,6 @@
 			path = WishleTests;
 			sourceTree = "<group>";
 		};
-		AD3E8A252E01B65A00E130FF /* WishleUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WishleUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +150,6 @@
 			children = (
 				AD3E8A092E01B65900E130FF /* Wishle */,
 				AD3E8A1B2E01B65A00E130FF /* WishleTests */,
-				AD3E8A252E01B65A00E130FF /* WishleUITests */,
 				AD0AA4022E01BA620043F13C /* WishleWidget */,
 				AD0AA3FD2E01BA620043F13C /* Frameworks */,
 				AD3E8A082E01B65900E130FF /* Products */,
@@ -258,9 +252,6 @@
 			);
 			dependencies = (
 				AD3E8A242E01B65A00E130FF /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AD3E8A252E01B65A00E130FF /* WishleUITests */,
 			);
 			name = WishleUITests;
 			packageProductDependencies = (
