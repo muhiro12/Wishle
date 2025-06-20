@@ -8,7 +8,8 @@
 import Foundation
 
 /// In-memory representation of a wish item.
-struct Wish: Identifiable, Hashable {
+@Observable
+final class Wish: Identifiable, Hashable {
     /// Unique identifier for the wish.
     var id: String
     /// The user-facing title.
