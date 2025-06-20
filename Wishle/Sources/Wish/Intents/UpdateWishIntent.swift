@@ -10,9 +10,8 @@ import SwiftData
 import SwiftUtilities
 
 struct UpdateWishIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Update Wish"
-
-    @Dependency private var modelContainer: ModelContainer
+    typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
+    typealias Output = Void
 
     @Parameter(title: "ID")
     private var id: String
@@ -32,6 +31,10 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
     @Parameter(title: "Priority")
     private var priority: Int?
 
+    @Dependency private var modelContainer: ModelContainer
+
+    static var title: LocalizedStringResource = "Update Wish"
+
     static var parameterSummary: some ParameterSummary {
         Summary("Update wish \(\.$id)") {
             \.$title
@@ -41,9 +44,6 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
             \.$priority
         }
     }
-
-    typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
-    typealias Output = Void
 
     static func perform(_ input: Input) throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input

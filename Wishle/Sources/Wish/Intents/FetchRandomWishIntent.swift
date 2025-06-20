@@ -10,12 +10,12 @@ import SwiftData
 import SwiftUtilities
 
 struct FetchRandomWishIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Get Random Wish"
+    typealias Input = ModelContext
+    typealias Output = Wish
 
     @Dependency private var modelContainer: ModelContainer
 
-    typealias Input = ModelContext
-    typealias Output = Wish
+    static var title: LocalizedStringResource = "Get Random Wish"
 
     static func perform(_ context: ModelContext) throws -> Wish {
         let models = try context.fetch(FetchDescriptor<WishModel>())

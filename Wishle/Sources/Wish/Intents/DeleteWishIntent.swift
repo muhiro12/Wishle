@@ -10,19 +10,19 @@ import SwiftData
 import SwiftUtilities
 
 struct DeleteWishIntent: AppIntent, IntentPerformer {
-    static var title: LocalizedStringResource = "Delete Wish"
-
-    @Dependency private var modelContainer: ModelContainer
+    typealias Input = (context: ModelContext, id: String)
+    typealias Output = Void
 
     @Parameter(title: "ID")
     private var id: String
 
+    @Dependency private var modelContainer: ModelContainer
+
+    static var title: LocalizedStringResource = "Delete Wish"
+
     static var parameterSummary: some ParameterSummary {
         Summary("Delete wish \(\.$id)")
     }
-
-    typealias Input = (context: ModelContext, id: String)
-    typealias Output = Void
 
     static func perform(_ input: Input) throws {
         let (context, id) = input
