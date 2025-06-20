@@ -42,6 +42,11 @@ struct SettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                Section("Debug") {
+                    NavigationLink("Debug Tools") {
+                        DebugView()
+                    }
+                }
             }
             .navigationTitle("Settings")
             .sheet(isPresented: $isPaywallPresented) {
