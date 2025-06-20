@@ -6,6 +6,8 @@ struct WishSuggestionView: View {
 
     @State private var suggestion: String = ""
     @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
+    @State private var isErrorAlertPresented: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -36,14 +38,30 @@ struct WishSuggestionView: View {
             }
             .navigationTitle("Suggestions")
             .padding()
+            .alert(
+                "Error",
+                isPresented: $isErrorAlertPresented
+            ) {
+                Button("OK", role: .cancel) {
+                    errorMessage = nil
+                }
+            } message: {
+                Text(errorMessage ?? "An unknown error occurred.")
+            }
         }
     }
 
     private func fetchRandom() {
         isLoading = true
         Task {
-            let wish = try? FetchRandomWishIntent.perform(modelContext)
-            suggestion = wish?.title ?? ""
+            do {
+                let wish = try FetchRandomWishIntent.perform(modelContext)
+                suggestion = wish.title
+            } catch {
+                errorMessage = error.localizedDescription
+                isErrorAlertPresented = true
+                suggestion = ""
+            }
             isLoading = false
         }
     }
@@ -51,8 +69,14 @@ struct WishSuggestionView: View {
     private func suggestFromRandom() {
         isLoading = true
         Task {
-            let wish = try? await SuggestWishFromRandomIntent.perform(modelContext)
-            suggestion = wish?.title ?? ""
+            do {
+                let wish = try await SuggestWishFromRandomIntent.perform(modelContext)
+                suggestion = wish.title
+            } catch {
+                errorMessage = error.localizedDescription
+                isErrorAlertPresented = true
+                suggestion = ""
+            }
             isLoading = false
         }
     }
@@ -60,8 +84,14 @@ struct WishSuggestionView: View {
     private func suggestFromRecent() {
         isLoading = true
         Task {
-            let wish = try? await SuggestWishFromRecentIntent.perform(modelContext)
-            suggestion = wish?.title ?? ""
+            do {
+                let wish = try await SuggestWishFromRecentIntent.perform(modelContext)
+                suggestion = wish.title
+            } catch {
+                errorMessage = error.localizedDescription
+                isErrorAlertPresented = true
+                suggestion = ""
+            }
             isLoading = false
         }
     }
