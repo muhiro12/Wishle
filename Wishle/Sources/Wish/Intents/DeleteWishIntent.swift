@@ -6,7 +6,7 @@
 //
 
 import AppIntents
-@preconcurrency import SwiftData
+import SwiftData
 import SwiftUtilities
 
 struct DeleteWishIntent: AppIntent, IntentPerformer {
@@ -37,7 +37,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some IntentResult {
+    func perform() throws -> some IntentResult {
         try Self.perform((
             context: modelContainer.mainContext,
             id: id

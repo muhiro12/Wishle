@@ -7,7 +7,7 @@
 
 import AppIntents
 import FoundationModels
-@preconcurrency import SwiftData
+import SwiftData
 import SwiftUtilities
 
 @Generable

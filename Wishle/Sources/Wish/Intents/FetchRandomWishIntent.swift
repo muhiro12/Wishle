@@ -6,7 +6,7 @@
 //
 
 import AppIntents
-@preconcurrency import SwiftData
+import SwiftData
 import SwiftUtilities
 
 struct FetchRandomWishIntent: AppIntent, IntentPerformer {
@@ -30,7 +30,7 @@ struct FetchRandomWishIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some ReturnsValue<String> {
+    func perform() throws -> some ReturnsValue<String> {
         let wish = try Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)
     }
