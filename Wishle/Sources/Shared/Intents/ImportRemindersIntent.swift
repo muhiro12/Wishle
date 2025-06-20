@@ -6,7 +6,7 @@
 //
 
 import AppIntents
-import SwiftData
+@preconcurrency import SwiftData
 import SwiftUtilities
 
 struct ImportRemindersIntent: AppIntent, IntentPerformer {

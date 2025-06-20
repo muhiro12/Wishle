@@ -64,7 +64,7 @@ struct WishListView: View {
         for index in offsets {
             let model = wishes[index]
             Task {
-                try? await DeleteWishIntent.perform((
+                _ = try? DeleteWishIntent.perform((
                     context: modelContext,
                     id: model.id
                 ))

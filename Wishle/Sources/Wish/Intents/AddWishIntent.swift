@@ -6,7 +6,7 @@
 //
 
 import AppIntents
-import SwiftData
+@preconcurrency import SwiftData
 import SwiftUtilities
 
 struct AddWishIntent: AppIntent, IntentPerformer {
@@ -52,7 +52,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
 
     @MainActor
     func perform() async throws -> some ReturnsValue<String> {
-        let wish = try await Self.perform((
+        let wish = try Self.perform((
             context: modelContainer.mainContext,
             title: title,
             notes: notes,
