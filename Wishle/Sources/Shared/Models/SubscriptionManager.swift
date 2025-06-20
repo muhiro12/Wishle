@@ -38,7 +38,9 @@ final class SubscriptionManager {
 
     // Purchase the subscription.
     func purchase() async throws {
-        guard let product else { return }
+        guard let product else {
+            return
+        }
         let result = try await product.purchase()
         switch result {
         case .success(let verification):

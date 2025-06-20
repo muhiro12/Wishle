@@ -34,11 +34,15 @@ struct AddWishView: View {
             .navigationTitle("Add Wish")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
-                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Button("Save") {
+                        save()
+                    }
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
         }

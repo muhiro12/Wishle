@@ -31,7 +31,9 @@ struct Wish: Identifiable, Hashable {
 
     /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {
-        guard let dueDate else { return false }
+        guard let dueDate else {
+            return false
+        }
         return dueDate < .now && !isCompleted
     }
 

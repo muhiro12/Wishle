@@ -26,7 +26,9 @@ struct RemindersImporter {
             let predicate = eventStore.predicateForReminders(in: [calendar])
             let reminders = try await fetchRemindersAsync(matching: predicate)
             for reminder in reminders {
-                guard let title = reminder.title else { continue }
+                guard let title = reminder.title else {
+                    continue
+                }
                 let dueDate = reminder.dueDateComponents?.date
                 let notes = reminder.notes
                 let priority = Int(reminder.priority)
@@ -64,7 +66,11 @@ struct RemindersImporter {
                     ))
                     // Update tags directly
                     let id = wish.id
-                    if let model = try? modelContext.fetch(FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })).first {
+                    if let model = try? modelContext.fetch(
+                        FetchDescriptor<WishModel>(predicate: #Predicate {
+                            $0.id == id
+                        })
+                    ).first {
                         model.tags.append(TagModel(tag))
                         try modelContext.save()
                     }
@@ -75,7 +81,9 @@ struct RemindersImporter {
 
     private func fetchOrCreateTag(name: String) throws -> Tag {
         let lowercasedName = name.lowercased()
-        let descriptor = FetchDescriptor<TagModel>(predicate: #Predicate { $0.name == lowercasedName })
+        let descriptor = FetchDescriptor<TagModel>(predicate: #Predicate {
+            $0.name == lowercasedName
+        })
         if let model = try modelContext.fetch(descriptor).first {
             return model.tag
         }
@@ -86,11 +94,17 @@ struct RemindersImporter {
     }
 
     private func findWish(for reminder: EKReminder, tag: Tag) throws -> Wish? {
-        guard let title = reminder.title else { return nil }
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.title == title })
+        guard let title = reminder.title else {
+            return nil
+        }
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
+            $0.title == title
+        })
         let models = try modelContext.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
-        return models.map(\.wish).first { $0.dueDate == dueDate && $0.tags.contains(tag) }
+        return models.map(\.wish).first { wish in
+            wish.dueDate == dueDate && wish.tags.contains(tag)
+        }
     }
 
     private func requestFullAccessToRemindersAsync() async throws {

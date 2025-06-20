@@ -47,10 +47,14 @@ struct EditWishView: View {
             .navigationTitle("Edit Wish")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
+                    Button("Save") {
+                        save()
+                    }
                 }
             }
         }

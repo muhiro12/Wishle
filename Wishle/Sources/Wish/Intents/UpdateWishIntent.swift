@@ -47,15 +47,27 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
 
     static func perform(_ input: Input) async throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
+            $0.id == id
+        })
         guard let model = try context.fetch(descriptor).first else {
             return
         }
-        if let title { model.title = title }
-        if let notes { model.notes = notes }
-        if let dueDate { model.dueDate = dueDate }
-        if let isCompleted { model.isCompleted = isCompleted }
-        if let priority { model.priority = priority }
+        if let title {
+            model.title = title
+        }
+        if let notes {
+            model.notes = notes
+        }
+        if let dueDate {
+            model.dueDate = dueDate
+        }
+        if let isCompleted {
+            model.isCompleted = isCompleted
+        }
+        if let priority {
+            model.priority = priority
+        }
         model.updatedAt = .now
         try context.save()
     }

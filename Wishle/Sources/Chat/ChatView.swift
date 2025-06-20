@@ -38,7 +38,9 @@ struct ChatView: View {
             HStack {
                 TextField("Enter wish", text: $inputText)
                     .textFieldStyle(.roundedBorder)
-                Button("Send") { send() }
+                Button("Send") {
+                    send()
+                }
                     .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding()
@@ -47,18 +49,24 @@ struct ChatView: View {
 
     private func chatBubble(for message: ChatMessage) -> some View {
         HStack {
-            if message.isUser { Spacer() }
+            if message.isUser {
+                Spacer()
+            }
             Text(message.text)
                 .padding(8)
                 .background(message.isUser ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
-            if !message.isUser { Spacer() }
+            if !message.isUser {
+                Spacer()
+            }
         }
     }
 
     private func send() {
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
+        guard !trimmed.isEmpty else {
+            return
+        }
         let userMessage = ChatMessage(text: trimmed, isUser: true)
         messages.append(userMessage)
         inputText = ""

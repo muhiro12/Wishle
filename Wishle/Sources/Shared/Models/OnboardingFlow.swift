@@ -36,19 +36,25 @@ struct OnboardingFlow: View {
     var body: some View {
         TabView(selection: $selection) {
             page(title: "Welcome to Wishle", description: "Store what you wish to do, not what you must do.") {
-                Button("Next") { selection = 1 }
+                Button("Next") {
+                    selection = 1
+                }
             }
             .tag(0)
 
             page(title: nil, description: nil) {
                 TipView(swipeTip)
-                Button("Next") { selection = 2 }
+                Button("Next") {
+                    selection = 2
+                }
             }
             .tag(1)
 
             page(title: nil, description: nil) {
                 TipView(editTip)
-                Button("Get Started") { finish() }
+                Button("Get Started") {
+                    finish()
+                }
             }
             .tag(2)
         }
