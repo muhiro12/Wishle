@@ -8,7 +8,8 @@
 import Foundation
 
 /// In-memory representation of a tag used to categorize wishes.
-struct Tag: Identifiable, Hashable {
+@Observable
+final class Tag: Identifiable, Hashable {
     /// Unique identifier for the tag.
     var id: String
     /// Lowercased unique name of the tag.

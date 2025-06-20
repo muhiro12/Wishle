@@ -19,8 +19,9 @@ struct WishListView: View {
         NavigationStack {
             List {
                 ForEach(wishes) { model in
-                    Button {
-                        editingWish = model
+                    NavigationLink {
+                        WishDetailView()
+                            .environment(model.wish)
                     } label: {
                         HStack {
                             VStack(alignment: .leading) {
@@ -36,6 +37,11 @@ struct WishListView: View {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(.green)
                             }
+                        }
+                    }
+                    .contextMenu {
+                        Button("Edit") {
+                            editingWish = model
                         }
                     }
                 }
