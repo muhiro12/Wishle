@@ -73,8 +73,8 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some IntentResult {
-        try await Self.perform((
+    func perform() throws -> some IntentResult {
+        try Self.perform((
             context: modelContainer.mainContext,
             id: id,
             title: title,

@@ -30,8 +30,8 @@ struct FetchRandomWishIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some ReturnsValue<String> {
-        let wish = try await Self.perform(modelContainer.mainContext)
+    func perform() throws -> some ReturnsValue<String> {
+        let wish = try Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)
     }
 }

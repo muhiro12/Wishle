@@ -35,7 +35,7 @@ struct RemindersImporter {
                 if let existing = try findWish(for: reminder, tag: tag) {
                     if let lastModified = reminder.lastModifiedDate,
                        lastModified > existing.updatedAt {
-                        try await UpdateWishIntent.perform((
+                        try UpdateWishIntent.perform((
                             context: modelContext,
                             id: existing.id,
                             title: title,
@@ -46,7 +46,7 @@ struct RemindersImporter {
                         ))
                     }
                 } else {
-                    var wish = try await AddWishIntent.perform((
+                    var wish = try AddWishIntent.perform((
                         context: modelContext,
                         title: title,
                         notes: notes,
@@ -55,7 +55,7 @@ struct RemindersImporter {
                     ))
                     wish.isCompleted = reminder.isCompleted
                     wish.tags.append(tag)
-                    try await UpdateWishIntent.perform((
+                    try UpdateWishIntent.perform((
                         context: modelContext,
                         id: wish.id,
                         title: nil,

@@ -26,7 +26,7 @@ struct ChatView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                 }
-                .onChange(of: messages.count) { _ in
+                .onChange(of: messages.count) {
                     if let last = messages.last?.id {
                         withAnimation {
                             proxy.scrollTo(last, anchor: .bottom)
@@ -72,7 +72,7 @@ struct ChatView: View {
         inputText = ""
 
         Task {
-            let wish = try? await AddWishIntent.perform((
+            let wish = try? AddWishIntent.perform((
                 context: modelContext,
                 title: trimmed,
                 notes: nil,

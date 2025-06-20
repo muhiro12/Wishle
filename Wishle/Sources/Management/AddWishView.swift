@@ -50,7 +50,7 @@ struct AddWishView: View {
 
     private func save() {
         Task {
-            try? await AddWishIntent.perform((
+            _ = try? AddWishIntent.perform((
                 context: modelContext,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,

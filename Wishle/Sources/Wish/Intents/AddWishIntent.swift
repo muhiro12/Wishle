@@ -51,8 +51,8 @@ struct AddWishIntent: AppIntent, IntentPerformer {
     }
 
     @MainActor
-    func perform() async throws -> some ReturnsValue<String> {
-        let wish = try await Self.perform((
+    func perform() throws -> some ReturnsValue<String> {
+        let wish = try Self.perform((
             context: modelContainer.mainContext,
             title: title,
             notes: notes,
