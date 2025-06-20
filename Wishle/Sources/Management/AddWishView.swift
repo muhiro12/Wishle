@@ -66,4 +66,3 @@ struct AddWishView: View {
     AddWishView()
         .modelContainer(for: WishModel.self, inMemory: true)
 }
-

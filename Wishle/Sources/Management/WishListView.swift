@@ -77,4 +77,3 @@ struct WishListView: View {
     WishListView()
         .modelContainer(for: WishModel.self, inMemory: true)
 }
-

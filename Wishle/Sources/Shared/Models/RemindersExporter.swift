@@ -45,8 +45,7 @@ struct RemindersExporter {
     private func fetchOrCreateCalendar(name: String) throws -> EKCalendar {
         if let calendar = eventStore
             .calendars(for: .reminder)
-            .first(where: { $0.title == name })
-        {
+            .first(where: { $0.title == name }) {
             return calendar
         }
         let calendar = EKCalendar(for: .reminder, eventStore: eventStore)

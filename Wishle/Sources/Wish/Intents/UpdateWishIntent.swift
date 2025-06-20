@@ -45,7 +45,7 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
     typealias Output = Void
 
-    static func perform(_ input: Input) async throws {
+    static func perform(_ input: Input) throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
             $0.id == id

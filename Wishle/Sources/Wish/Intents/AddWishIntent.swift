@@ -37,7 +37,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, title: String, notes: String?, dueDate: Date?, priority: Int)
     typealias Output = Wish
 
-    static func perform(_ input: Input) async throws -> Wish {
+    static func perform(_ input: Input) throws -> Wish {
         let (context, title, notes, dueDate, priority) = input
         let model = WishModel(
             title: title,

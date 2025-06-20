@@ -24,7 +24,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, id: String)
     typealias Output = Void
 
-    static func perform(_ input: Input) async throws {
+    static func perform(_ input: Input) throws {
         let (context, id) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
             $0.id == id

@@ -11,4 +11,3 @@ struct ChatMessage: Identifiable, Hashable {
     var text: String
     var isUser: Bool
 }
-

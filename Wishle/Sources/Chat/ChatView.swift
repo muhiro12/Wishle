@@ -41,7 +41,7 @@ struct ChatView: View {
                 Button("Send") {
                     send()
                 }
-                    .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding()
         }
