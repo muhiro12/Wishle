@@ -19,6 +19,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Wishes", systemImage: "list.bullet")
                 }
+            WishSearchView()
+                .tabItem {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
             WishSuggestionView()
                 .tabItem {
                     Label("Suggest", systemImage: "lightbulb")
