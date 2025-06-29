@@ -9,7 +9,7 @@ import Foundation
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
-final class Tag: Identifiable, Hashable {
+final class Tag {
     /// Unique identifier for the tag.
     var id: String
     /// Lowercased unique name of the tag.
@@ -29,16 +29,22 @@ final class Tag: Identifiable, Hashable {
     }
 
     /// Creates a ``Tag`` from a ``TagModel``.
-    init(_ model: TagModel) {
+    convenience init(_ model: TagModel) {
         self.init(id: model.id, name: model.name)
     }
 
     /// Sample tags for preview usage.
-    static func sample() -> [Self] {
+    static func sample() -> [Tag] {
         [
             .init(name: "home"),
             .init(name: "work"),
             .init(name: "urgent")
         ]
+    }
+}
+
+extension Tag: Equatable {
+    static func == (lhs: Tag, rhs: Tag) -> Bool {
+        lhs.id == rhs.id
     }
 }

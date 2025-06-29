@@ -35,10 +35,10 @@ struct WishDetailView: View {
             if !wish.tags.isEmpty {
                 Section("Tags") {
                     ForEach(wish.tags, id: \.id) { tag in
-                    NavigationLink {
-                        TagDetailView()
-                            .environment(tag)
-                    } label: {
+                        NavigationLink {
+                            TagDetailView()
+                                .environment(tag)
+                        } label: {
                             Text(tag.name)
                         }
                     }
@@ -59,8 +59,9 @@ struct WishDetailView: View {
     }
 
     private func loadModel() {
+        let id = wish.id
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
-            $0.id == wish.id
+            $0.id == id
         })
         editingModel = try? modelContext.fetch(descriptor).first
     }

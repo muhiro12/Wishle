@@ -9,7 +9,7 @@ import Foundation
 
 /// In-memory representation of a wish item.
 @Observable
-final class Wish: Identifiable, Hashable {
+final class Wish {
     /// Unique identifier for the wish.
     var id: String
     /// The user-facing title.
@@ -59,7 +59,7 @@ final class Wish: Identifiable, Hashable {
     }
 
     /// Creates a ``Wish`` from a ``WishModel``.
-    init(_ model: WishModel) {
+    convenience init(_ model: WishModel) {
         self.init(
             id: model.id,
             title: model.title,
