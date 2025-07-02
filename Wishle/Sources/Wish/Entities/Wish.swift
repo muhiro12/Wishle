@@ -10,15 +10,15 @@ import AppIntents
 
 /// In-memory representation of a wish item.
 @Observable
-final class Wish: AppEntity {
+struct Wish: AppEntity {
     static let defaultQuery = WishEntityQuery()
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        .init(name: "Wish")
+        .init(name: LocalizedStringResource("Wish"))
     }
 
     var displayRepresentation: DisplayRepresentation {
-        .init(title: title)
+        .init(title: LocalizedStringResource(title))
     }
     /// Unique identifier for the wish.
     var id: String
@@ -69,7 +69,7 @@ final class Wish: AppEntity {
     }
 
     /// Creates a ``Wish`` from a ``WishModel``.
-    convenience init(_ model: WishModel) {
+    init(_ model: WishModel) {
         self.init(
             id: model.id,
             title: model.title,

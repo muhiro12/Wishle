@@ -10,15 +10,15 @@ import AppIntents
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
-final class Tag: AppEntity {
+struct Tag: AppEntity {
     static let defaultQuery = TagEntityQuery()
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        .init(name: "Tag")
+        .init(name: LocalizedStringResource("Tag"))
     }
 
     var displayRepresentation: DisplayRepresentation {
-        .init(title: name)
+        .init(title: LocalizedStringResource(name))
     }
     /// Unique identifier for the tag.
     var id: String
@@ -39,7 +39,7 @@ final class Tag: AppEntity {
     }
 
     /// Creates a ``Tag`` from a ``TagModel``.
-    convenience init(_ model: TagModel) {
+    init(_ model: TagModel) {
         self.init(id: model.id, name: model.name)
     }
 
