@@ -6,10 +6,20 @@
 //
 
 import Foundation
+import AppIntents
 
 /// In-memory representation of a wish item.
 @Observable
-final class Wish {
+final class Wish: AppEntity {
+    static let defaultQuery = WishEntityQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        .init(name: "Wish")
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        .init(title: title)
+    }
     /// Unique identifier for the wish.
     var id: String
     /// The user-facing title.

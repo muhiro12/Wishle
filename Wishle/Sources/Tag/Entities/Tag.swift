@@ -6,10 +6,20 @@
 //
 
 import Foundation
+import AppIntents
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
-final class Tag {
+final class Tag: AppEntity {
+    static let defaultQuery = TagEntityQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        .init(name: "Tag")
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        .init(title: name)
+    }
     /// Unique identifier for the tag.
     var id: String
     /// Lowercased unique name of the tag.
