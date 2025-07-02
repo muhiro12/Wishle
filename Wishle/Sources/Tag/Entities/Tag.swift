@@ -7,6 +7,7 @@
 
 import Foundation
 import AppIntents
+import Observation
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
