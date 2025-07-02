@@ -11,7 +11,7 @@ import Observation
 
 /// In-memory representation of a wish item.
 @Observable
-struct Wish: AppEntity {
+final class Wish: AppEntity {
     static let defaultQuery = WishEntityQuery()
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {

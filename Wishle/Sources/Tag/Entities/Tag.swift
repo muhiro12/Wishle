@@ -11,7 +11,7 @@ import Observation
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
-struct Tag: AppEntity {
+final class Tag: AppEntity {
     static let defaultQuery = TagEntityQuery()
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
