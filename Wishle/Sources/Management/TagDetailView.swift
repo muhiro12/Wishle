@@ -55,8 +55,8 @@ struct TagDetailView: View {
 
 #Preview {
     let container = try! ModelContainer(for: WishModel.self)
-    let tag = TagModel(name: "home")
-    let wish = WishModel(title: "Sample", tags: [tag])
+    let tag = TagModel(name: "travel")
+    let wish = WishModel(title: "Plan a weekend trip", tags: [tag])
     tag.wishes = [wish]
     container.mainContext.insert(tag)
     container.mainContext.insert(wish)
