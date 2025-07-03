@@ -51,7 +51,7 @@ struct AddWishView: View {
     private func save() {
         Task {
             _ = try? AddWishIntent.perform((
-                context: modelContext,
+                container: modelContext.container,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,
                 dueDate: nil,

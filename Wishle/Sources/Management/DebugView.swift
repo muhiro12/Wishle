@@ -60,12 +60,12 @@ struct DebugView: View {
     }
 
     private func generateSampleData() throws {
-        let generator = SampleDataGenerator(modelContext: modelContext)
+        let generator = SampleDataGenerator(modelContainer: modelContext.container)
         try generator.generate()
     }
 
     private func deleteAllData() throws {
-        let generator = SampleDataGenerator(modelContext: modelContext)
+        let generator = SampleDataGenerator(modelContainer: modelContext.container)
         try generator.removeAll()
     }
 }

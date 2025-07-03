@@ -11,17 +11,17 @@ import SwiftData
 @MainActor
 struct RemindersExporter {
     private let eventStore: EKEventStore
-    private let modelContext: ModelContext
+    private let modelContainer: ModelContainer
 
     init(eventStore: EKEventStore = .init(),
-         modelContext: ModelContext) {
+         modelContainer: ModelContainer) {
         self.eventStore = eventStore
-        self.modelContext = modelContext
+        self.modelContainer = modelContainer
     }
 
     func export() async throws {
         try await eventStore.requestFullAccessToReminders()
-        let models = try modelContext.fetch(FetchDescriptor<WishModel>())
+        let models = try modelContainer.mainContext.fetch(FetchDescriptor<WishModel>())
         for model in models {
             let wish = model.wish
             for tag in wish.tags {

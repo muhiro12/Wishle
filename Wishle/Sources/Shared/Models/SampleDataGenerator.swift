@@ -3,16 +3,16 @@ import SwiftData
 
 @MainActor
 struct SampleDataGenerator {
-    private let modelContext: ModelContext
+    private let modelContainer: ModelContainer
 
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
+    init(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
     }
 
     func generate() throws {
         let tagModels = Tag.sample().map(TagModel.init)
         for tag in tagModels {
-            modelContext.insert(tag)
+            modelContainer.mainContext.insert(tag)
         }
         for index in 1...5 {
             let wish = WishModel(
@@ -22,20 +22,20 @@ struct SampleDataGenerator {
                 priority: index % 2,
                 tags: [tagModels[index % tagModels.count]]
             )
-            modelContext.insert(wish)
+            modelContainer.mainContext.insert(wish)
         }
-        try modelContext.save()
+        try modelContainer.mainContext.save()
     }
 
     func removeAll() throws {
-        let wishes = try modelContext.fetch(FetchDescriptor<WishModel>())
+        let wishes = try modelContainer.mainContext.fetch(FetchDescriptor<WishModel>())
         for wish in wishes {
-            modelContext.delete(wish)
+            modelContainer.mainContext.delete(wish)
         }
-        let tags = try modelContext.fetch(FetchDescriptor<TagModel>())
+        let tags = try modelContainer.mainContext.fetch(FetchDescriptor<TagModel>())
         for tag in tags {
-            modelContext.delete(tag)
+            modelContainer.mainContext.delete(tag)
         }
-        try modelContext.save()
+        try modelContainer.mainContext.save()
     }
 }

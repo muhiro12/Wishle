@@ -17,14 +17,15 @@ private struct RecentWishSuggestion: Decodable {
 }
 
 struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
-    typealias Input = ModelContext
+    typealias Input = ModelContainer
     typealias Output = Wish
 
     @Dependency private var modelContainer: ModelContainer
 
     static var title: LocalizedStringResource = "Suggest Wish from Recent"
 
-    static func perform(_ context: ModelContext) async throws -> Wish {
+    static func perform(_ container: ModelContainer) async throws -> Wish {
+        let context = container.mainContext
         var descriptor = FetchDescriptor<WishModel>(
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
@@ -42,7 +43,7 @@ struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
 
     @MainActor
     func perform() async throws -> some ReturnsValue<String> {
-        let wish = try await Self.perform(modelContainer.mainContext)
+        let wish = try await Self.perform(modelContainer)
         return .result(value: wish.title)
     }
 }

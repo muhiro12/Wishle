@@ -30,7 +30,7 @@ struct SettingsView: View {
                 Section("Data") {
                     Button("Import Reminders") {
                         Task {
-                            try? await ImportRemindersIntent.perform(modelContext)
+                            try? await ImportRemindersIntent.perform(modelContext.container)
                         }
                     }
                 }

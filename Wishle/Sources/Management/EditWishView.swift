@@ -63,7 +63,7 @@ struct EditWishView: View {
     private func save() {
         Task {
             _ = try? UpdateWishIntent.perform((
-                context: modelContext,
+                container: modelContext.container,
                 id: wishModel.id,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,
