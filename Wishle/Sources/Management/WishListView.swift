@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct WishListView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
     @Query(sort: \WishModel.createdAt) private var wishes: [WishModel]
 
     @State private var isPresentingAddSheet: Bool = false
@@ -71,7 +71,7 @@ struct WishListView: View {
             let model = wishes[index]
             Task {
                 _ = try? DeleteWishIntent.perform((
-                    container: modelContext.container,
+                    context: context,
                     id: model.id
                 ))
             }

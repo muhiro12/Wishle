@@ -8,7 +8,7 @@ import SwiftData
 import SwiftUI
 
 struct ChatView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
 
     @State private var messages: [ChatMessage] = []
     @State private var inputText: String = ""
@@ -73,7 +73,7 @@ struct ChatView: View {
 
         Task {
             let wish = try? AddWishIntent.perform((
-                container: modelContext.container,
+                context: context,
                 title: trimmed,
                 notes: nil,
                 dueDate: nil,

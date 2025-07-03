@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AddWishView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
 
     @State private var title: String = ""
     @State private var notes: String = ""
@@ -51,7 +51,7 @@ struct AddWishView: View {
     private func save() {
         Task {
             _ = try? AddWishIntent.perform((
-                container: modelContext.container,
+                context: context,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,
                 dueDate: nil,

@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUtilities
 
 struct DeleteWishIntent: AppIntent, IntentPerformer {
-    typealias Input = (container: ModelContainer, id: String)
+    typealias Input = (context: ModelContext, id: String)
     typealias Output = Void
 
     @Parameter(title: "ID")
@@ -25,8 +25,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
     }
 
     static func perform(_ input: Input) throws {
-        let (container, id) = input
-        let context = container.mainContext
+        let (context, id) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
             $0.id == id
         })
@@ -40,7 +39,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
     @MainActor
     func perform() throws -> some IntentResult {
         try Self.perform((
-            container: modelContainer,
+            context: modelContainer.mainContext,
             id: id
         ))
         return .result()

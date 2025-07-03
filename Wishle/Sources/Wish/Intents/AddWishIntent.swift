@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUtilities
 
 struct AddWishIntent: AppIntent, IntentPerformer {
-    typealias Input = (container: ModelContainer, title: String, notes: String?, dueDate: Date?, priority: Int)
+    typealias Input = (context: ModelContext, title: String, notes: String?, dueDate: Date?, priority: Int)
     typealias Output = Wish
 
     @Parameter(title: "Title")
@@ -38,8 +38,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
     }
 
     static func perform(_ input: Input) throws -> Wish {
-        let (container, title, notes, dueDate, priority) = input
-        let context = container.mainContext
+        let (context, title, notes, dueDate, priority) = input
         let model = WishModel(
             title: title,
             notes: notes,
@@ -54,7 +53,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
     @MainActor
     func perform() throws -> some ReturnsValue<String> {
         let wish = try Self.perform((
-            container: modelContainer,
+            context: modelContainer.mainContext,
             title: title,
             notes: notes,
             dueDate: dueDate,

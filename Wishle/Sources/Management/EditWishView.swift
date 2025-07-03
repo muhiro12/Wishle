@@ -11,7 +11,7 @@ import SwiftUI
 struct EditWishView: View {
     let wishModel: WishModel
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
 
     @State private var title: String
     @State private var notes: String
@@ -63,7 +63,7 @@ struct EditWishView: View {
     private func save() {
         Task {
             _ = try? UpdateWishIntent.perform((
-                container: modelContext.container,
+                context: context,
                 id: wishModel.id,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,

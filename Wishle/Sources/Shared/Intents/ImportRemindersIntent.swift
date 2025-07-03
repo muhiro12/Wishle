@@ -10,21 +10,21 @@ import SwiftData
 import SwiftUtilities
 
 struct ImportRemindersIntent: AppIntent, IntentPerformer {
-    typealias Input = ModelContainer
+    typealias Input = ModelContext
     typealias Output = Void
 
     @Dependency private var modelContainer: ModelContainer
 
     static var title: LocalizedStringResource = "Import Reminders"
 
-    static func perform(_ container: ModelContainer) async throws {
-        let importer: RemindersImporter = .init(modelContainer: container)
+    static func perform(_ input: Input) async throws {
+        let importer: RemindersImporter = .init(modelContainer: input.container)
         try await importer.import()
     }
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        try await Self.perform(modelContainer)
+        try await Self.perform(modelContainer.mainContext)
         return .result()
     }
 }

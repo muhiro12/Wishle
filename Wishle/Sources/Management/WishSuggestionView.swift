@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 
 struct WishSuggestionView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
 
     @State private var suggestion: String = ""
     @State private var isLoading: Bool = false
@@ -55,7 +55,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try FetchRandomWishIntent.perform(modelContext.container)
+                let wish = try FetchRandomWishIntent.perform(context)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription
@@ -70,7 +70,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try await SuggestWishFromRandomIntent.perform(modelContext.container)
+                let wish = try await SuggestWishFromRandomIntent.perform(context)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription
@@ -85,7 +85,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try await SuggestWishFromRecentIntent.perform(modelContext.container)
+                let wish = try await SuggestWishFromRecentIntent.perform(context)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription

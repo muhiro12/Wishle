@@ -17,18 +17,17 @@ private struct RandomWishSuggestion: Decodable {
 }
 
 struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
-    typealias Input = ModelContainer
+    typealias Input = ModelContext
     typealias Output = Wish
 
     @Dependency private var modelContainer: ModelContainer
 
     static var title: LocalizedStringResource = "Suggest Wish from Random"
 
-    static func perform(_ container: ModelContainer) async throws -> Wish {
-        let context = container.mainContext
+    static func perform(_ input: Input) async throws -> Wish {
         var samples: [Wish] = []
         for _ in 0..<5 {
-            let wish = try FetchRandomWishIntent.perform(container)
+            let wish = try FetchRandomWishIntent.perform(input)
             samples.append(wish)
         }
         let prompt = samples.map { "- \($0.title)" }.joined(separator: "\n")
@@ -42,7 +41,7 @@ struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
 
     @MainActor
     func perform() async throws -> some ReturnsValue<String> {
-        let wish = try await Self.perform(modelContainer)
+        let wish = try await Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)
     }
 }
