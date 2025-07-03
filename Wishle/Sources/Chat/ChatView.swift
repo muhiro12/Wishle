@@ -73,7 +73,7 @@ struct ChatView: View {
 
         Task {
             let wish = try? AddWishIntent.perform((
-                context: modelContext,
+                container: modelContext.container,
                 title: trimmed,
                 notes: nil,
                 dueDate: nil,

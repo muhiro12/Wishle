@@ -55,7 +55,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try FetchRandomWishIntent.perform(modelContext)
+                let wish = try FetchRandomWishIntent.perform(modelContext.container)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription
@@ -70,7 +70,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try await SuggestWishFromRandomIntent.perform(modelContext)
+                let wish = try await SuggestWishFromRandomIntent.perform(modelContext.container)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription
@@ -85,7 +85,7 @@ struct WishSuggestionView: View {
         isLoading = true
         Task {
             do {
-                let wish = try await SuggestWishFromRecentIntent.perform(modelContext)
+                let wish = try await SuggestWishFromRecentIntent.perform(modelContext.container)
                 suggestion = wish.title
             } catch {
                 errorMessage = error.localizedDescription

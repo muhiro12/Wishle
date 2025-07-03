@@ -71,7 +71,7 @@ struct WishListView: View {
             let model = wishes[index]
             Task {
                 _ = try? DeleteWishIntent.perform((
-                    context: modelContext,
+                    container: modelContext.container,
                     id: model.id
                 ))
             }

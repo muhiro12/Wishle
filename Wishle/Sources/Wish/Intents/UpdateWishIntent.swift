@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUtilities
 
 struct UpdateWishIntent: AppIntent, IntentPerformer {
-    typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
+    typealias Input = (container: ModelContainer, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
     typealias Output = Void
 
     @Parameter(title: "ID")
@@ -46,7 +46,8 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
     }
 
     static func perform(_ input: Input) throws {
-        let (context, id, title, notes, dueDate, isCompleted, priority) = input
+        let (container, id, title, notes, dueDate, isCompleted, priority) = input
+        let context = container.mainContext
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
             $0.id == id
         })
@@ -75,7 +76,7 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
     @MainActor
     func perform() throws -> some IntentResult {
         try Self.perform((
-            context: modelContainer.mainContext,
+            container: modelContainer,
             id: id,
             title: title,
             notes: notes,
