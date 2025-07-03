@@ -8,14 +8,13 @@
 import EventKit
 import SwiftData
 
-@MainActor
 struct RemindersImporter {
+    private let context: ModelContext
     private let eventStore: EKEventStore
-    private let modelContainer: ModelContainer
 
-    init(eventStore: EKEventStore = .init(), modelContainer: ModelContainer) {
+    init(context: ModelContext, eventStore: EKEventStore = .init()) {
+        self.context = context
         self.eventStore = eventStore
-        self.modelContainer = modelContainer
     }
 
     func `import`() async throws {
@@ -36,7 +35,7 @@ struct RemindersImporter {
                     if let lastModified = reminder.lastModifiedDate,
                        lastModified > existing.updatedAt {
                         try UpdateWishIntent.perform((
-                            context: modelContainer.mainContext,
+                            context: context,
                             id: existing.id,
                             title: title,
                             notes: notes,
@@ -47,7 +46,7 @@ struct RemindersImporter {
                     }
                 } else {
                     let wish = try AddWishIntent.perform((
-                        context: modelContainer.mainContext,
+                        context: context,
                         title: title,
                         notes: notes,
                         dueDate: dueDate,
@@ -56,7 +55,7 @@ struct RemindersImporter {
                     wish.isCompleted = reminder.isCompleted
                     wish.tags.append(tag)
                     try UpdateWishIntent.perform((
-                        context: modelContainer.mainContext,
+                        context: context,
                         id: wish.id,
                         title: nil,
                         notes: nil,
@@ -66,13 +65,13 @@ struct RemindersImporter {
                     ))
                     // Update tags directly
                     let id = wish.id
-                    if let model = try? modelContainer.mainContext.fetch(
+                    if let model = try? context.fetch(
                         FetchDescriptor<WishModel>(predicate: #Predicate {
                             $0.id == id
                         })
                     ).first {
                         model.tags.append(TagModel(tag))
-                        try modelContainer.mainContext.save()
+                        try context.save()
                     }
                 }
             }
@@ -84,12 +83,12 @@ struct RemindersImporter {
         let descriptor = FetchDescriptor<TagModel>(predicate: #Predicate {
             $0.name == lowercasedName
         })
-        if let model = try modelContainer.mainContext.fetch(descriptor).first {
+        if let model = try context.fetch(descriptor).first {
             return model.tag
         }
         let model = TagModel(name: name)
-        modelContainer.mainContext.insert(model)
-        try modelContainer.mainContext.save()
+        context.insert(model)
+        try context.save()
         return model.tag
     }
 
@@ -100,7 +99,7 @@ struct RemindersImporter {
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
             $0.title == title
         })
-        let models = try modelContainer.mainContext.fetch(descriptor)
+        let models = try context.fetch(descriptor)
         let dueDate = reminder.dueDateComponents?.date
         return models.map(\.wish).first { wish in
             wish.dueDate == dueDate && wish.tags.contains(tag)

@@ -18,7 +18,7 @@ struct ImportRemindersIntent: AppIntent, IntentPerformer {
     static var title: LocalizedStringResource = "Import Reminders"
 
     static func perform(_ input: Input) async throws {
-        let importer: RemindersImporter = .init(modelContainer: input.container)
+        let importer: RemindersImporter = .init(context: input)
         try await importer.import()
     }
 
