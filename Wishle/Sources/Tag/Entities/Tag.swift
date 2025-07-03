@@ -36,9 +36,10 @@ final class Tag {
     /// Sample tags for preview usage.
     static func sample() -> [Tag] {
         [
-            .init(name: "home"),
-            .init(name: "work"),
-            .init(name: "urgent")
+            .init(name: "travel"),
+            .init(name: "food"),
+            .init(name: "personal"),
+            .init(name: "learning")
         ]
     }
 }

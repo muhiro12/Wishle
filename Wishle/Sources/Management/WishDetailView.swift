@@ -69,7 +69,7 @@ struct WishDetailView: View {
 
 #Preview {
     let container = try! ModelContainer(for: WishModel.self)
-    let sample = WishModel(title: "Sample Wish")
+    let sample = WishModel(title: "Plan a weekend trip")
     container.mainContext.insert(sample)
     return NavigationStack {
         WishDetailView()
