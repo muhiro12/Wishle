@@ -9,6 +9,6 @@ struct WidgetWish: Identifiable, Codable, Hashable {
 
 extension WidgetWish {
     static var placeholder: WidgetWish {
-        .init(id: .init(), title: "Sample", dueDate: .now.addingTimeInterval(3_600), priority: 0)
+        .init(id: .init(), title: "Weekend trip", dueDate: .now.addingTimeInterval(3_600), priority: 0)
     }
 }
