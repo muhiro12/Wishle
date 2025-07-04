@@ -4,18 +4,32 @@ import SwiftUI
 struct WishSuggestionView: View {
     @Environment(\.modelContext) private var context
 
-    @State private var suggestion: String = ""
+    @State private var suggestedWish: Wish?
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var isErrorAlertPresented: Bool = false
+    @State private var isPresentingAddSheet: Bool = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                if !suggestion.isEmpty {
-                    Text(suggestion)
-                        .multilineTextAlignment(.center)
-                        .padding()
+                if let wish = suggestedWish {
+                    VStack(spacing: 8) {
+                        Text(wish.title)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        if let notes = wish.notes {
+                            Text(notes)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .padding([.horizontal, .bottom])
+                        }
+                        Button("Add Wish") {
+                            isPresentingAddSheet = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(isLoading)
+                    }
                 }
                 Button("Fetch Random Wish") {
                     fetchRandom()
@@ -48,6 +62,11 @@ struct WishSuggestionView: View {
             } message: {
                 Text(errorMessage ?? "An unknown error occurred.")
             }
+            .sheet(isPresented: $isPresentingAddSheet) {
+                if let wish = suggestedWish {
+                    AddWishView(title: wish.title, notes: wish.notes ?? "", priority: wish.priority)
+                }
+            }
         }
     }
 
@@ -56,11 +75,11 @@ struct WishSuggestionView: View {
         Task {
             do {
                 let wish = try FetchRandomWishIntent.perform(context)
-                suggestion = wish.title
+                suggestedWish = wish
             } catch {
                 errorMessage = error.localizedDescription
                 isErrorAlertPresented = true
-                suggestion = ""
+                suggestedWish = nil
             }
             isLoading = false
         }
@@ -71,11 +90,11 @@ struct WishSuggestionView: View {
         Task {
             do {
                 let wish = try await SuggestWishFromRandomIntent.perform(context)
-                suggestion = wish.title
+                suggestedWish = wish
             } catch {
                 errorMessage = error.localizedDescription
                 isErrorAlertPresented = true
-                suggestion = ""
+                suggestedWish = nil
             }
             isLoading = false
         }
@@ -86,11 +105,11 @@ struct WishSuggestionView: View {
         Task {
             do {
                 let wish = try await SuggestWishFromRecentIntent.perform(context)
-                suggestion = wish.title
+                suggestedWish = wish
             } catch {
                 errorMessage = error.localizedDescription
                 isErrorAlertPresented = true
-                suggestion = ""
+                suggestedWish = nil
             }
             isLoading = false
         }
