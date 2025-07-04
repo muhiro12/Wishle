@@ -12,9 +12,15 @@ struct AddWishView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
-    @State private var title: String = ""
-    @State private var notes: String = ""
-    @State private var priority: Int = 0
+    @State private var title: String
+    @State private var notes: String
+    @State private var priority: Int
+
+    init(title: String = "", notes: String = "", priority: Int = 0) {
+        _title = State(initialValue: title)
+        _notes = State(initialValue: notes)
+        _priority = State(initialValue: priority)
+    }
 
     var body: some View {
         NavigationStack {
