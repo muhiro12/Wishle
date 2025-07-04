@@ -15,7 +15,7 @@ struct FetchRandomWishIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Get Random Wish"
+    nonisolated static let title: LocalizedStringResource = "Get Random Wish"
 
     static func perform(_ input: Input) throws -> Wish {
         let models = try input.fetch(FetchDescriptor<WishModel>())
@@ -29,7 +29,6 @@ struct FetchRandomWishIntent: AppIntent, IntentPerformer {
         return model.wish
     }
 
-    @MainActor
     func perform() throws -> some ReturnsValue<String> {
         let wish = try Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)

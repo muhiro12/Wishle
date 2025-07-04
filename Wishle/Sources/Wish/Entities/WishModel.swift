@@ -10,7 +10,7 @@ import SwiftData
 
 /// SwiftData model object for persisting wishes.
 @Model
-final class WishModel: Identifiable, Hashable {
+nonisolated final class WishModel: Identifiable, Hashable {
     /// Unique identifier for the wish.
     @Attribute(.unique) var id: String
     /// The user-facing title.

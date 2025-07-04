@@ -9,26 +9,26 @@ import Foundation
 
 /// In-memory representation of a wish item.
 @Observable
-final class Wish {
+nonisolated final class Wish {
     /// Unique identifier for the wish.
-    var id: String
+    let id: String
     /// The user-facing title.
-    var title: String
+    let title: String
     /// Optional notes about the wish.
-    var notes: String?
+    let notes: String?
     /// An optional due date.
-    var dueDate: Date?
+    let dueDate: Date?
     /// Marks the wish as completed.
-    var isCompleted: Bool
+    let isCompleted: Bool
     /// Priority level (0 normal, 1 high).
-    var priority: Int
+    let priority: Int
     /// Creation timestamp.
-    var createdAt: Date
+    let createdAt: Date
     /// Last update timestamp.
-    var updatedAt: Date
+    let updatedAt: Date
 
     /// Tags associated with the wish.
-    var tags: [Tag] = []
+    let tags: [Tag]
 
     /// Returns true when the due date has passed and the wish is not completed.
     var isOverdue: Bool {

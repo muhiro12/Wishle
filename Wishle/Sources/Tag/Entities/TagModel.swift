@@ -10,7 +10,7 @@ import SwiftData
 
 /// SwiftData model object for persisting tags.
 @Model
-final class TagModel: Identifiable, Hashable {
+nonisolated final class TagModel: Identifiable, Hashable {
     /// Unique identifier for the tag.
     @Attribute(.unique) var id: String
     /// Lowercased unique name of the tag.

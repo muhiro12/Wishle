@@ -9,18 +9,11 @@ import Foundation
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
-final class Tag {
+nonisolated final class Tag {
     /// Unique identifier for the tag.
-    var id: String
+    let id: String
     /// Lowercased unique name of the tag.
-    var name: String {
-        didSet {
-            let lowercasedName = name.lowercased()
-            if name != lowercasedName {
-                name = lowercasedName
-            }
-        }
-    }
+    let name: String
 
     init(id: String = UUID().uuidString,
          name: String) {

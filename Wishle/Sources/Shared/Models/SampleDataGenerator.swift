@@ -1,7 +1,6 @@
 import Foundation
 import SwiftData
 
-@MainActor
 struct SampleDataGenerator {
     private let modelContainer: ModelContainer
 

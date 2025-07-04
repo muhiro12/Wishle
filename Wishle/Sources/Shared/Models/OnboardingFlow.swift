@@ -8,7 +8,7 @@
 import SwiftUI
 import TipKit
 
-struct SwipeToCompleteTip: Tip {
+nonisolated struct SwipeToCompleteTip: Tip {
     var title: Text {
         Text("Swipe to complete")
     }
@@ -17,7 +17,7 @@ struct SwipeToCompleteTip: Tip {
     }
 }
 
-struct LongPressQuickEditTip: Tip {
+nonisolated struct LongPressQuickEditTip: Tip {
     var title: Text {
         Text("Long-press for quick edit")
     }

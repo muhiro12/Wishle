@@ -33,17 +33,7 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Update Wish"
-
-    static var parameterSummary: some ParameterSummary {
-        Summary("Update wish \(\.$id)") {
-            \.$title
-            \.$notes
-            \.$dueDate
-            \.$isCompleted
-            \.$priority
-        }
-    }
+    nonisolated static let title: LocalizedStringResource = "Update Wish"
 
     static func perform(_ input: Input) throws {
         let (context, id, title, notes, dueDate, isCompleted, priority) = input
@@ -72,7 +62,6 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
         try context.save()
     }
 
-    @MainActor
     func perform() throws -> some IntentResult {
         try Self.perform((
             context: modelContainer.mainContext,

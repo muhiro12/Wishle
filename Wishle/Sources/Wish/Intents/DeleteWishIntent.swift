@@ -18,11 +18,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Delete Wish"
-
-    static var parameterSummary: some ParameterSummary {
-        Summary("Delete wish \(\.$id)")
-    }
+    nonisolated static let title: LocalizedStringResource = "Delete Wish"
 
     static func perform(_ input: Input) throws {
         let (context, id) = input
@@ -36,7 +32,6 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
         try context.save()
     }
 
-    @MainActor
     func perform() throws -> some IntentResult {
         try Self.perform((
             context: modelContainer.mainContext,

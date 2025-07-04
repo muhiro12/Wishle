@@ -27,15 +27,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Add Wish"
-
-    static var parameterSummary: some ParameterSummary {
-        Summary("Add \(\.$title)") {
-            \.$notes
-            \.$dueDate
-            \.$priority
-        }
-    }
+    nonisolated static let title: LocalizedStringResource = "Add Wish"
 
     static func perform(_ input: Input) throws -> Wish {
         let (context, title, notes, dueDate, priority) = input
@@ -50,7 +42,6 @@ struct AddWishIntent: AppIntent, IntentPerformer {
         return model.wish
     }
 
-    @MainActor
     func perform() throws -> some ReturnsValue<String> {
         let wish = try Self.perform((
             context: modelContainer.mainContext,

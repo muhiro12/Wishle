@@ -22,7 +22,7 @@ struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Suggest Wish from Random"
+    nonisolated static let title: LocalizedStringResource = "Suggest Wish from Random"
 
     static func perform(_ input: Input) async throws -> Wish {
         var samples: [Wish] = []
@@ -39,7 +39,6 @@ struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
         return Wish(title: response.content.title, notes: response.content.notes)
     }
 
-    @MainActor
     func perform() async throws -> some ReturnsValue<String> {
         let wish = try await Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)

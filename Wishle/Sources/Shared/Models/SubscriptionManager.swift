@@ -9,7 +9,7 @@ import Foundation
 import StoreKit
 import SwiftUI
 
-@MainActor @Observable
+@Observable
 final class SubscriptionManager {
     static let shared = SubscriptionManager()
 

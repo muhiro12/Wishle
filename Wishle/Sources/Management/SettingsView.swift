@@ -27,13 +27,6 @@ struct SettingsView: View {
                         isPaywallPresented = true
                     }
                 }
-                Section("Data") {
-                    Button("Import Reminders") {
-                        Task {
-                            try? await ImportRemindersIntent.perform(modelContext)
-                        }
-                    }
-                }
                 Section("About") {
                     HStack {
                         Text("Version")

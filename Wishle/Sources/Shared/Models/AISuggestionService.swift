@@ -14,7 +14,6 @@ struct SuggestionContext: Sendable {
 }
 
 /// Service that generates wish suggestions using an on-device foundation model.
-@MainActor
 final class AISuggestionService {
     static let shared = AISuggestionService()
 

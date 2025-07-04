@@ -22,7 +22,7 @@ struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
 
     @Dependency private var modelContainer: ModelContainer
 
-    static var title: LocalizedStringResource = "Suggest Wish from Recent"
+    nonisolated static let title: LocalizedStringResource = "Suggest Wish from Recent"
 
     static func perform(_ input: Input) async throws -> Wish {
         var descriptor = FetchDescriptor<WishModel>(
@@ -40,7 +40,6 @@ struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
         return Wish(title: response.content.title, notes: response.content.notes)
     }
 
-    @MainActor
     func perform() async throws -> some ReturnsValue<String> {
         let wish = try await Self.perform(modelContainer.mainContext)
         return .result(value: wish.title)
