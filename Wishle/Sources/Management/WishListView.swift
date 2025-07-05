@@ -91,6 +91,12 @@ struct WishListView: View {
                             Button("Edit") {
                                 editingWish = model
                             }
+                            Button(model.isCompleted ? "Mark Incomplete" : "Mark Complete") {
+                                toggleCompletion(model)
+                            }
+                            Button("Delete", role: .destructive) {
+                                deleteWish(model)
+                            }
                         }
                         .swipeActions(edge: .leading) {
                             Button {
@@ -141,6 +147,15 @@ struct WishListView: View {
                     id: model.id
                 ))
             }
+        }
+    }
+
+    private func deleteWish(_ model: WishModel) {
+        Task {
+            _ = try? DeleteWishIntent.perform((
+                context: context,
+                id: model.id
+            ))
         }
     }
 

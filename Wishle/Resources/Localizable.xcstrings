@@ -422,10 +422,24 @@
       }
     },
     "Mark Complete" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了にする"
+          }
+        }
+      }
     },
     "Mark Incomplete" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未完了にする"
+          }
+        }
+      }
     },
     "Message" : {
 
