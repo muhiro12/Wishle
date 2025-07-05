@@ -68,15 +68,21 @@ struct ContentView: View {
 
     private func addItem() {
         withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+            _ = try? AddItemIntent.perform((
+                context: modelContext,
+                timestamp: Date()
+            ))
         }
     }
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                let item = items[index]
+                _ = try? DeleteItemIntent.perform((
+                    context: modelContext,
+                    item: item
+                ))
             }
         }
     }

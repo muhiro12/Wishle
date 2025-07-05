@@ -60,11 +60,10 @@ struct WishDetailView: View {
     }
 
     private func loadModel() {
-        let id = wish.id
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
-            $0.id == id
-        })
-        editingModel = try? modelContext.fetch(descriptor).first
+        editingModel = try? FetchWishIntent.perform((
+            context: modelContext,
+            id: wish.id
+        ))
     }
 }
 

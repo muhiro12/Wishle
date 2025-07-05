@@ -43,14 +43,10 @@ struct TagDetailView: View {
     }
 
     private func loadWishes() {
-        let descriptor = FetchDescriptor<WishModel>()
-        if let models = try? modelContext.fetch(descriptor) {
-            wishes = models
-                .filter { model in
-                    model.tags.contains { $0.id == tag.id }
-                }
-                .map(\.wish)
-        }
+        wishes = (try? FetchWishesByTagIntent.perform((
+            context: modelContext,
+            tagID: tag.id
+        ))) ?? []
     }
 }
 
