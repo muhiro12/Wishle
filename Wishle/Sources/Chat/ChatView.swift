@@ -25,8 +25,13 @@ struct ChatView: View {
                         ForEach(messages) { message in
                             chatBubble(for: message)
                                 .id(message.id)
+                                .transition(
+                                    .move(edge: message.isUser ? .trailing : .leading)
+                                        .combined(with: .opacity)
+                                )
                         }
                     }
+                    .animation(.spring(), value: messages)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                 }
@@ -39,12 +44,14 @@ struct ChatView: View {
                 }
             }
             Divider()
-            HStack {
+            HStack(spacing: 12) {
                 TextField("Enter message", text: $inputText)
-                    .textFieldStyle(.roundedBorder)
+                    .padding(.vertical, 8)
+                    .liquidGlass(cornerRadius: 20)
                 Button("Send") {
                     send()
                 }
+                .buttonStyle(.borderedProminent)
                 .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding()
@@ -57,9 +64,7 @@ struct ChatView: View {
                 Spacer()
             }
             Text(message.text)
-                .padding(8)
-                .background(message.isUser ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.2))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .liquidGlass(cornerRadius: 20)
             if !message.isUser {
                 Spacer()
             }
@@ -71,7 +76,9 @@ struct ChatView: View {
         guard !trimmed.isEmpty else {
             return
         }
-        messages.append(.init(text: trimmed, isUser: true))
+        withAnimation(.spring()) {
+            messages.append(.init(text: trimmed, isUser: true))
+        }
         inputText = ""
 
         Task {
@@ -116,7 +123,9 @@ struct ChatView: View {
                     responseText = "I couldn't come up with a wish."
                 }
             }
-            messages.append(.init(text: responseText, isUser: false))
+            withAnimation(.spring()) {
+                messages.append(.init(text: responseText, isUser: false))
+            }
         }
     }
 }
