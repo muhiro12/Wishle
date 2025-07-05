@@ -13,13 +13,12 @@ import UserNotifications
 final class NotificationManager {
     static let shared = NotificationManager()
 
-    private let center = UNUserNotificationCenter.current()
     private let defaults = UserDefaults.standard
 
     private init() {}
 
     func requestAuthorization() async {
-        _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+        _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
     }
 
     func scheduleDeadlineNotification(for model: WishModel, daysBefore: Int = 0) {
@@ -41,11 +40,11 @@ final class NotificationManager {
             content: content,
             trigger: trigger
         )
-        center.add(request)
+        UNUserNotificationCenter.current().add(request)
     }
 
     func removeDeadlineNotification(for id: String) {
-        center.removePendingNotificationRequests(withIdentifiers: ["wish-\(id)"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["wish-\(id)"])
     }
 
     func scheduleDailySuggestion(at hour: Int = 9, minute: Int = 0) {
@@ -62,7 +61,7 @@ final class NotificationManager {
             content: content,
             trigger: trigger
         )
-        center.add(request)
+        UNUserNotificationCenter.current().add(request)
     }
 
     func recordLaunch() {
@@ -85,6 +84,6 @@ final class NotificationManager {
             content: content,
             trigger: trigger
         )
-        center.add(request)
+        UNUserNotificationCenter.current().add(request)
     }
 }
