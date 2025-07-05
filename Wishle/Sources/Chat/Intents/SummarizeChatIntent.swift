@@ -1,5 +1,6 @@
 import AppIntents
 import FoundationModels
+import SwiftUtilities
 
 struct SummarizeChatIntent: AppIntent, IntentPerformer {
     typealias Input = Void

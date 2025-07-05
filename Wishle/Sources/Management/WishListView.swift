@@ -16,6 +16,14 @@ private enum WishStatusFilter: String, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
+private enum WishPriorityFilter: String, CaseIterable, Identifiable {
+    case all = "All"
+    case high = "High"
+    case normal = "Normal"
+
+    var id: Self { self }
+}
+
 struct WishListView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \WishModel.createdAt) private var wishes: [WishModel]
@@ -24,6 +32,7 @@ struct WishListView: View {
     @State private var isPresentingAddSheet: Bool = false
     @State private var editingWish: WishModel?
     @State private var statusFilter: WishStatusFilter = .all
+    @State private var priorityFilter: WishPriorityFilter = .all
     @State private var selectedTagID: String?
     @State private var filteredWishes: [WishModel] = []
 
@@ -45,6 +54,13 @@ struct WishListView: View {
                 }
                 .pickerStyle(.menu)
 
+                Picker("Priority", selection: $priorityFilter) {
+                    ForEach(WishPriorityFilter.allCases) { filter in
+                        Text(filter.rawValue).tag(filter)
+                    }
+                }
+                .pickerStyle(.segmented)
+
                 List {
                     ForEach(filteredWishes) { model in
                         NavigationLink {
@@ -61,6 +77,10 @@ struct WishListView: View {
                                     }
                                 }
                                 Spacer()
+                                if model.priority == 1 {
+                                    Image(systemName: "exclamationmark.circle.fill")
+                                        .foregroundColor(.red)
+                                }
                                 if model.isCompleted {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.green)
@@ -105,6 +125,7 @@ struct WishListView: View {
                 EditWishView(wishModel: model)
             }
             .onChange(of: statusFilter) { applyFilter() }
+            .onChange(of: priorityFilter) { applyFilter() }
             .onChange(of: selectedTagID) { applyFilter() }
             .onChange(of: wishes) { applyFilter() }
             .task { applyFilter() }
@@ -152,6 +173,17 @@ struct WishListView: View {
             models = models.filter { model in
                 model.tags.contains { $0.id == tagID }
             }
+        }
+        switch priorityFilter {
+        case .all:
+            break
+        case .high:
+            models = models.filter { $0.priority == 1 }
+        case .normal:
+            models = models.filter { $0.priority == 0 }
+        }
+        models.sort { lhs, rhs in
+            lhs.priority > rhs.priority
         }
         filteredWishes = models
     }
