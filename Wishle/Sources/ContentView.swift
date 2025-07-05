@@ -15,7 +15,6 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
 
-    @State private var configurationService = ConfigurationService.shared
     @State private var isUpdateAlertPresented = false
 
     var body: some View {
@@ -62,8 +61,7 @@ struct ContentView: View {
             Text("Please update Wishle to the latest version to continue using it.")
         }
         .task {
-            try? await configurationService.load()
-            isUpdateAlertPresented = configurationService.isUpdateRequired()
+            isUpdateAlertPresented = (try? await CheckForUpdateIntent.perform()) ?? false
         }
     }
 
