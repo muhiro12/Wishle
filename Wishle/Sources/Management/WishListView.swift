@@ -8,44 +8,73 @@
 import SwiftData
 import SwiftUI
 
+private enum WishStatusFilter: String, CaseIterable, Identifiable {
+    case all = "All"
+    case completed = "Completed"
+    case incomplete = "Incomplete"
+
+    var id: Self { self }
+}
+
 struct WishListView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \WishModel.createdAt) private var wishes: [WishModel]
+    @Query(sort: \TagModel.name) private var tags: [TagModel]
 
     @State private var isPresentingAddSheet: Bool = false
     @State private var editingWish: WishModel?
+    @State private var statusFilter: WishStatusFilter = .all
+    @State private var selectedTagID: String?
+    @State private var filteredWishes: [WishModel] = []
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(wishes) { model in
-                    NavigationLink {
-                        WishDetailView()
-                            .environment(model.wish)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(model.title)
-                                if let notes = model.notes {
-                                    Text(notes)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            Spacer()
-                            if model.isCompleted {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                            }
-                        }
-                    }
-                    .contextMenu {
-                        Button("Edit") {
-                            editingWish = model
-                        }
+            VStack(spacing: 12) {
+                Picker("Status", selection: $statusFilter) {
+                    ForEach(WishStatusFilter.allCases) { filter in
+                        Text(filter.rawValue).tag(filter)
                     }
                 }
-                .onDelete(perform: delete)
+                .pickerStyle(.segmented)
+
+                Picker("Category", selection: $selectedTagID) {
+                    Text("All").tag(nil as String?)
+                    ForEach(tags) { tag in
+                        Text(tag.name.capitalized).tag(Optional(tag.id))
+                    }
+                }
+                .pickerStyle(.menu)
+
+                List {
+                    ForEach(filteredWishes) { model in
+                        NavigationLink {
+                            WishDetailView()
+                                .environment(model.wish)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(model.title)
+                                    if let notes = model.notes {
+                                        Text(notes)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                if model.isCompleted {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
+                        .contextMenu {
+                            Button("Edit") {
+                                editingWish = model
+                            }
+                        }
+                    }
+                    .onDelete(perform: delete)
+                }
             }
             .navigationTitle("Wishes")
             .toolbar {
@@ -63,6 +92,10 @@ struct WishListView: View {
             .sheet(item: $editingWish) { model in
                 EditWishView(wishModel: model)
             }
+            .onChange(of: statusFilter) { _ in applyFilter() }
+            .onChange(of: selectedTagID) { _ in applyFilter() }
+            .onChange(of: wishes) { _ in applyFilter() }
+            .task { applyFilter() }
         }
     }
 
@@ -76,6 +109,24 @@ struct WishListView: View {
                 ))
             }
         }
+    }
+
+    private func applyFilter() {
+        var models = wishes
+        switch statusFilter {
+        case .all:
+            break
+        case .completed:
+            models = models.filter { $0.isCompleted }
+        case .incomplete:
+            models = models.filter { !$0.isCompleted }
+        }
+        if let tagID = selectedTagID {
+            models = models.filter { model in
+                model.tags.contains { $0.id == tagID }
+            }
+        }
+        filteredWishes = models
     }
 }
 
