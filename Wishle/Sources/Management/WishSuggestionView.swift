@@ -12,46 +12,87 @@ struct WishSuggestionView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                if let wish = suggestedWish {
-                    VStack(spacing: 8) {
-                        Text(wish.title)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        if let notes = wish.notes {
-                            Text(notes)
-                                .font(.caption)
-                                .multilineTextAlignment(.center)
-                                .padding([.horizontal, .bottom])
+            ScrollView {
+                VStack(spacing: 32) {
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .frame(maxWidth: .infinity)
+                    } else if let wish = suggestedWish {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(wish.title)
+                                .font(.title2.bold())
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if let notes = wish.notes {
+                                Text(notes)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            Button {
+                                isPresentingAddSheet = true
+                            } label: {
+                                Label("Add to Wishes", systemImage: "plus")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(isLoading)
                         }
-                        Button("Add Wish") {
-                            isPresentingAddSheet = true
+                        .padding()
+                        .background(.thinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .shadow(radius: 4)
+                        .padding(.horizontal)
+                    } else {
+                        Text("Tap a button below to get a suggestion.")
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal)
+                    }
+
+                    VStack(spacing: 16) {
+                        Button {
+                            fetchRandom()
+                        } label: {
+                            Label("Fetch Random Wish", systemImage: "dice")
+                                .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
+                        .disabled(isLoading)
+
+                        Button {
+                            suggestFromRandom()
+                        } label: {
+                            Label("Suggest From Random", systemImage: "sparkles")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isLoading)
+
+                        Button {
+                            suggestFromRecent()
+                        } label: {
+                            Label("Suggest From Recent", systemImage: "clock")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
                         .disabled(isLoading)
                     }
+                    .padding(.horizontal)
                 }
-                Button("Fetch Random Wish") {
-                    fetchRandom()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(isLoading)
-
-                Button("Suggest From Random") {
-                    suggestFromRandom()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(isLoading)
-
-                Button("Suggest From Recent") {
-                    suggestFromRecent()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(isLoading)
-                Spacer()
+                .padding(.vertical)
             }
             .navigationTitle("Suggestions")
-            .padding()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        suggestFromRandom()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .disabled(isLoading)
+                }
+            }
             .alert(
                 "Error",
                 isPresented: $isErrorAlertPresented
