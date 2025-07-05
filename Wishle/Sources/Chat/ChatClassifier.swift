@@ -17,7 +17,7 @@ enum ChatClassifier {
     }
 
     @Generable
-    private struct IntentResult: Decodable {
+    struct IntentResult: Decodable {
         @Guide(description: "One of confirm, cancel, complete, or other")
         var intent: String
     }
