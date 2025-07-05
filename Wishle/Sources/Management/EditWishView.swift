@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct EditWishView: View {
-    let wishModel: WishModel
+    let wish: Wish
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -18,12 +18,12 @@ struct EditWishView: View {
     @State private var isCompleted: Bool
     @State private var priority: Int
 
-    init(wishModel: WishModel) {
-        self.wishModel = wishModel
-        _title = State(initialValue: wishModel.title)
-        _notes = State(initialValue: wishModel.notes ?? "")
-        _isCompleted = State(initialValue: wishModel.isCompleted)
-        _priority = State(initialValue: wishModel.priority)
+    init(wish: Wish) {
+        self.wish = wish
+        _title = State(initialValue: wish.title)
+        _notes = State(initialValue: wish.notes ?? "")
+        _isCompleted = State(initialValue: wish.isCompleted)
+        _priority = State(initialValue: wish.priority)
     }
 
     var body: some View {
@@ -65,7 +65,7 @@ struct EditWishView: View {
         Task {
             _ = try? UpdateWishIntent.perform((
                 context: context,
-                id: wishModel.id,
+                id: wish.id,
                 title: title,
                 notes: notes.isEmpty ? nil : notes,
                 dueDate: nil,
@@ -81,6 +81,6 @@ struct EditWishView: View {
     let container = try! ModelContainer(for: WishModel.self)
     let sample = WishModel(title: "Plan a weekend trip")
     container.mainContext.insert(sample)
-    return EditWishView(wishModel: sample)
+    return EditWishView(wish: .init(sample)!)
         .modelContainer(container)
 }

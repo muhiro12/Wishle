@@ -7,17 +7,30 @@
 
 import AppIntents
 import SwiftData
+import SwiftUtilities
 
 struct FetchWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, id: String)
-    typealias Output = WishModel?
+    typealias Output = Wish?
 
     nonisolated static let title: LocalizedStringResource = "Fetch Wish"
 
-    static func perform(_ input: Input) throws -> WishModel? {
+    @Parameter private var id: String
+
+    @Dependency private var modelContainer: ModelContainer
+
+    static func perform(_ input: Input) throws -> Output {
         let (context, id) = input
         let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == id })
-        return try context.fetch(descriptor).first
+        guard let model = try context.fetch(descriptor).first else {
+            return nil
+        }
+        return .init(model)
+    }
+
+    func perform() throws -> some IntentResult {
+        .result(
+            value: try Self.perform((modelContainer.mainContext, id))
+        )
     }
 }
-

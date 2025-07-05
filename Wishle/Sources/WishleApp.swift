@@ -12,7 +12,6 @@ import SwiftUI
 struct WishleApp: App {
     @State private var subscriptionManager = SubscriptionManager.shared
     @State private var notificationManager = NotificationManager.shared
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
@@ -35,22 +34,16 @@ struct WishleApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Group {
-                if hasSeenOnboarding {
-                    MainTabView()
-                } else {
-                    OnboardingFlow()
+            ContentView()
+                .task {
+                    await subscriptionManager.load()
                 }
-            }
-            .task {
-                await subscriptionManager.load()
-            }
-            .task {
-                await notificationManager.requestAuthorization()
-                notificationManager.recordLaunch()
-                notificationManager.scheduleDailySuggestion()
-                notificationManager.scheduleLaunchBasedSuggestion()
-            }
+                .task {
+                    await notificationManager.requestAuthorization()
+                    notificationManager.recordLaunch()
+                    notificationManager.scheduleDailySuggestion()
+                    notificationManager.scheduleLaunchBasedSuggestion()
+                }
         }
         .modelContainer(sharedModelContainer)
     }
