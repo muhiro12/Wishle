@@ -32,7 +32,8 @@ enum ChatClassifier {
             Message: \(text)
             """
         )
-        let result = try await ChatSession.session.respond(
+        let session = LanguageModelSession()
+        let result = try await session.respond(
             to: prompt,
             generating: IntentResult.self
         )
