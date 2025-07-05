@@ -35,12 +35,16 @@ struct SuggestWishIntent: AppIntent, IntentPerformer {
           \"notes\": \"<optional notes>\"
         }
         Do not add any text outside this JSON object.
+        Respond in the user's device language: {{language}}.
         Context: {{context}}
         """
     }
 
     static func perform(_ input: Input) async throws -> Wish {
-        let prompt = promptTemplate.replacingOccurrences(of: "{{context}}", with: input)
+        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
+        let prompt = promptTemplate
+            .replacingOccurrences(of: "{{context}}", with: input)
+            .replacingOccurrences(of: "{{language}}", with: language)
         let session = LanguageModelSession()
         do {
             let response = try await session.respond(
