@@ -72,6 +72,17 @@ struct WishListView: View {
                                 editingWish = model
                             }
                         }
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                toggleCompletion(model)
+                            } label: {
+                                Label(
+                                    model.isCompleted ? "Mark Incomplete" : "Mark Complete",
+                                    systemImage: model.isCompleted ? "arrow.uturn.left" : "checkmark"
+                                )
+                            }
+                            .tint(model.isCompleted ? .orange : .green)
+                        }
                     }
                     .onDelete(perform: delete)
                 }
@@ -109,6 +120,21 @@ struct WishListView: View {
                     id: model.id
                 ))
             }
+        }
+    }
+
+    private func toggleCompletion(_ model: WishModel) {
+        Task {
+            let isCompleted = !model.isCompleted
+            _ = try? UpdateWishIntent.perform((
+                context: context,
+                id: model.id,
+                title: nil,
+                notes: nil,
+                dueDate: nil,
+                isCompleted: isCompleted,
+                priority: nil
+            ))
         }
     }
 
