@@ -421,6 +421,15 @@
         }
       }
     },
+    "Mark Complete" : {
+
+    },
+    "Mark Incomplete" : {
+
+    },
+    "Message" : {
+
+    },
     "Next" : {
       "localizations" : {
         "ja" : {
@@ -581,6 +590,9 @@
         }
       }
     },
+    "Send Chat Message" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "ja" : {
@@ -690,6 +702,9 @@
           }
         }
       }
+    },
+    "Summarize Chat" : {
+
     },
     "Swipe a wish to mark it completed." : {
       "localizations" : {

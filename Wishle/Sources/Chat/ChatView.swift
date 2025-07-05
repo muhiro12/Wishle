@@ -80,7 +80,6 @@ struct ChatView: View {
                 AddWishView(title: wish.title, notes: wish.notes ?? "", priority: wish.priority)
             }
         }
-        }
     }
 
     private func chatBubble(for message: ChatMessage) -> some View {
@@ -116,7 +115,7 @@ struct ChatView: View {
             isSending = true
             do {
                 let responseText: String
-                if let wish = pendingWish {
+                if pendingWish != nil {
                     if trimmed.lowercased().contains("yes") ||
                         trimmed.lowercased().contains("add") {
                         isPresentingAddSheet = true
@@ -156,7 +155,7 @@ struct ChatView: View {
             }
             isSending = false
         }
-
+    }
 }
 
 #Preview {
