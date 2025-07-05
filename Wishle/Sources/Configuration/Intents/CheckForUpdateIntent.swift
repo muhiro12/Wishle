@@ -1,12 +1,14 @@
 import AppIntents
 import Foundation
+import SwiftUtilities
 
 struct CheckForUpdateIntent: AppIntent, IntentPerformer {
+    typealias Input = Void
     typealias Output = Bool
 
     nonisolated static let title: LocalizedStringResource = "Check for Update"
 
-    static func perform() async throws -> Bool {
+    static func perform(_: Input) async throws -> Output {
         let url = URL(string: "https://raw.githubusercontent.com/muhiro12/Wishle/main/.config.json")!
         let (data, _) = try await URLSession.shared.data(from: url)
         let configuration = try JSONDecoder().decode(Configuration.self, from: data)
@@ -18,6 +20,6 @@ struct CheckForUpdateIntent: AppIntent, IntentPerformer {
     }
 
     func perform() async throws -> some ReturnsValue<Bool> {
-        .result(value: try await Self.perform())
+        .result(value: try await Self.perform(()))
     }
 }

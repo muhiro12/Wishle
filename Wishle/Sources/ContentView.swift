@@ -61,7 +61,7 @@ struct ContentView: View {
             Text("Please update Wishle to the latest version to continue using it.")
         }
         .task {
-            isUpdateAlertPresented = (try? await CheckForUpdateIntent.perform()) ?? false
+            isUpdateAlertPresented = (try? await CheckForUpdateIntent.perform(())) ?? false
         }
     }
 
