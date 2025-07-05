@@ -9,6 +9,7 @@ import AppIntents
 import FoundationModels
 import SwiftData
 import SwiftUtilities
+import Foundation
 
 @Generable
 private struct RecentWishSuggestion: Decodable {
@@ -31,9 +32,8 @@ struct SuggestWishFromRecentIntent: AppIntent, IntentPerformer {
         descriptor.fetchLimit = 5
         let models = try input.fetch(descriptor)
         let recent = models.map(\.wish)
-        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
         let promptList = recent.map { "- \($0.title)" }.joined(separator: "\n")
-        let prompt = "Respond in the user's device language: \(language). Suggest a new wish based on these recent wishes:\n\(promptList)"
+        let prompt = PromptHelper.localized("Suggest a new wish based on these recent wishes:\n\(promptList)")
         let session = LanguageModelSession()
         let response = try await session.respond(
             to: prompt,

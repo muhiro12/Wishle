@@ -9,6 +9,9 @@ import AppIntents
 import FoundationModels
 import SwiftUtilities
 
+// Provides Locale.deviceLanguageIdentifier and PromptHelper
+import Foundation
+
 @Generable
 private struct WishSuggestion: Decodable {
     @Guide(description: "Title for the suggested wish")
@@ -41,10 +44,9 @@ struct SuggestWishIntent: AppIntent, IntentPerformer {
     }
 
     static func perform(_ input: Input) async throws -> Wish {
-        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
         let prompt = promptTemplate
             .replacingOccurrences(of: "{{context}}", with: input)
-            .replacingOccurrences(of: "{{language}}", with: language)
+            .replacingOccurrences(of: "{{language}}", with: Locale.deviceLanguageIdentifier)
         let session = LanguageModelSession()
         do {
             let response = try await session.respond(
