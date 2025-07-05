@@ -37,6 +37,7 @@ struct TagDetailView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle(tag.name)
         .task { loadWishes() }
     }

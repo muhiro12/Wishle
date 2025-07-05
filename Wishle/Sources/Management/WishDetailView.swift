@@ -45,6 +45,7 @@ struct WishDetailView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle(wish.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

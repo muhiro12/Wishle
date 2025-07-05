@@ -56,6 +56,7 @@ struct DebugView: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Debug")
     }
 

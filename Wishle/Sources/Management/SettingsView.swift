@@ -41,6 +41,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Settings")
             .sheet(isPresented: $isPaywallPresented) {
                 PaywallView()

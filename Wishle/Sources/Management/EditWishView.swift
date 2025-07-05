@@ -44,6 +44,7 @@ struct EditWishView: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Edit Wish")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

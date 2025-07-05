@@ -36,6 +36,7 @@ struct ChatView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                 }
+                .scrollDismissesKeyboard(.interactively)
                 .onChange(of: messages.count) {
                     if let last = messages.last?.id {
                         withAnimation {

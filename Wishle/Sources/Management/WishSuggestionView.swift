@@ -82,6 +82,7 @@ struct WishSuggestionView: View {
                 }
                 .padding(.vertical)
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Suggestions")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
