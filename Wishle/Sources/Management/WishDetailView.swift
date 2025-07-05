@@ -12,7 +12,7 @@ struct WishDetailView: View {
     @Environment(Wish.self) private var wish: Wish
     @Environment(\.modelContext) private var modelContext
 
-    @State private var editingModel: WishModel?
+    @State private var editingWish: Wish?
 
     var body: some View {
         List {
@@ -54,17 +54,16 @@ struct WishDetailView: View {
                 }
             }
         }
-        .sheet(item: $editingModel) { model in
-            EditWishView(wishModel: model)
+        .sheet(item: $editingWish) { wish in
+            EditWishView(wish: wish)
         }
     }
 
     private func loadModel() {
-        let id = wish.id
-        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate {
-            $0.id == id
-        })
-        editingModel = try? modelContext.fetch(descriptor).first
+        editingWish = try? FetchWishIntent.perform((
+            context: modelContext,
+            id: wish.id
+        ))
     }
 }
 

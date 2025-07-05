@@ -22,6 +22,7 @@
       }
     },
     "Add Item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -291,6 +292,12 @@
         }
       }
     },
+    "Fetch Wish" : {
+
+    },
+    "Fetch Wishes By Tag" : {
+
+    },
     "Free" : {
       "localizations" : {
         "ja" : {
@@ -382,6 +389,7 @@
       }
     },
     "Item at %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -505,6 +513,7 @@
       }
     },
     "Open App Store" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -515,6 +524,7 @@
       }
     },
     "Please update Wishle to the latest version to continue using it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -585,6 +595,7 @@
       }
     },
     "Select an item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -791,6 +802,7 @@
       }
     },
     "Update Required" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {

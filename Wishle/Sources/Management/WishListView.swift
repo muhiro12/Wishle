@@ -30,7 +30,7 @@ struct WishListView: View {
     @Query(sort: \TagModel.name) private var tags: [TagModel]
 
     @State private var isPresentingAddSheet: Bool = false
-    @State private var editingWish: WishModel?
+    @State private var editingWish: Wish?
     @State private var statusFilter: WishStatusFilter = .all
     @State private var priorityFilter: WishPriorityFilter = .all
     @State private var selectedTagID: String?
@@ -89,7 +89,7 @@ struct WishListView: View {
                         }
                         .contextMenu {
                             Button("Edit") {
-                                editingWish = model
+                                editingWish = .init(model)
                             }
                             Button(model.isCompleted ? "Mark Incomplete" : "Mark Complete") {
                                 toggleCompletion(model)
@@ -127,8 +127,8 @@ struct WishListView: View {
             .sheet(isPresented: $isPresentingAddSheet) {
                 AddWishView()
             }
-            .sheet(item: $editingWish) { model in
-                EditWishView(wishModel: model)
+            .sheet(item: $editingWish) { wish in
+                EditWishView(wish: wish)
             }
             .onChange(of: statusFilter) { applyFilter() }
             .onChange(of: priorityFilter) { applyFilter() }
