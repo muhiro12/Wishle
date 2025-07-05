@@ -1,7 +1,7 @@
 import AppIntents
+import Foundation
 import FoundationModels
 import SwiftUtilities
-import Foundation
 
 struct SendChatMessageIntent: AppIntent, IntentPerformer {
     typealias Input = String

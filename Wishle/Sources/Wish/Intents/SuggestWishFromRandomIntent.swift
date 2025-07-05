@@ -6,10 +6,10 @@
 //
 
 import AppIntents
+import Foundation
 import FoundationModels
 import SwiftData
 import SwiftUtilities
-import Foundation
 
 @Generable
 private struct RandomWishSuggestion: Decodable {

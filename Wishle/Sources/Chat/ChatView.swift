@@ -123,10 +123,10 @@ struct ChatView: View {
                 let action = try? await ChatClassifier.classify(trimmed)
                 if pendingWish != nil {
                     switch action {
-                    case .confirm?:
+                    case .confirm:
                         isPresentingAddSheet = true
                         responseText = String(localized: "Opening the form.")
-                    case .cancel?:
+                    case .cancel:
                         responseText = String(
                             localized: "Okay, let me know if you change your mind."
                         )

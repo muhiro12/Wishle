@@ -13,4 +13,3 @@ enum PromptHelper {
         "Respond in the user's device language: \(Locale.deviceLanguageIdentifier). \(text)"
     }
 }
-
