@@ -30,10 +30,12 @@ struct SuggestWishFromRandomIntent: AppIntent, IntentPerformer {
             let wish = try FetchRandomWishIntent.perform(input)
             samples.append(wish)
         }
-        let prompt = samples.map { "- \($0.title)" }.joined(separator: "\n")
+        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
+        let promptList = samples.map { "- \($0.title)" }.joined(separator: "\n")
+        let prompt = "Respond in the user's device language: \(language). Suggest a new wish based on these wishes:\n\(promptList)"
         let session = LanguageModelSession()
         let response = try await session.respond(
-            to: "Suggest a new wish based on these wishes:\n\(prompt)",
+            to: prompt,
             generating: RandomWishSuggestion.self
         )
         return Wish(title: response.content.title, notes: response.content.notes)
