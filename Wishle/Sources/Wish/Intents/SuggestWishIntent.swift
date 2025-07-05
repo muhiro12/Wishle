@@ -1,10 +1,19 @@
+//
+//  SuggestWishIntent.swift
+//  Wishle
+//
+//  Created by Codex on 2025/06/20.
+//
+
 import AppIntents
 import FoundationModels
 import SwiftUtilities
 
 @Generable
 private struct WishSuggestion: Decodable {
+    @Guide(description: "Title for the suggested wish")
     var title: String
+    @Guide(description: "Optional notes about the wish")
     var notes: String?
 }
 
@@ -18,32 +27,40 @@ struct SuggestWishIntent: AppIntent, IntentPerformer {
     nonisolated static let title: LocalizedStringResource = "Suggest Wish"
 
     private static var promptTemplate: String {
-        if let url = Bundle.main.url(
-            forResource: "suggestion_template",
-            withExtension: "txt",
-            subdirectory: "Prompts"
-        ),
-        let template = try? String(contentsOf: url, encoding: .utf8) {
-            return template
+        """
+        You are Wishle, a helpful assistant that suggests new wishes based on user input.
+        Provide one suggestion and respond only with a JSON object like:
+        {
+          \"title\": \"<wish title>\",
+          \"notes\": \"<optional notes>\"
         }
-        return ""
+        Do not add any text outside this JSON object.
+        Context: {{context}}
+        """
     }
 
     static func perform(_ input: Input) async throws -> Wish {
         let prompt = promptTemplate.replacingOccurrences(of: "{{context}}", with: input)
         let session = LanguageModelSession()
-        let response = try await session.respond(
-            to: prompt,
-            generating: [WishSuggestion].self
-        )
-        guard let suggestion = response.content.first else {
-            throw NSError(
-                domain: "SuggestWishIntent",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "No suggestions"]
+        do {
+            let response = try await session.respond(
+                to: prompt,
+                generating: WishSuggestion.self
             )
+            return .init(
+                title: response.content.title,
+                notes: response.content.notes
+            )
+        } catch {
+            let text = try await LanguageModelSession().respond(to: prompt).content
+            guard
+                let data = text.data(using: .utf8),
+                let fallback = try? JSONDecoder().decode(WishSuggestion.self, from: data)
+            else {
+                throw error
+            }
+            return .init(title: fallback.title, notes: fallback.notes)
         }
-        return .init(title: suggestion.title, notes: suggestion.notes)
     }
 
     func perform() async throws -> some ReturnsValue<String> {
