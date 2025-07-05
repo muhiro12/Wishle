@@ -15,6 +15,8 @@ struct ChatView: View {
     @State private var messages: [ChatMessage] = []
     @State private var inputText: String = ""
     @State private var pendingWish: Wish?
+    @State private var isEnableDebugAlertPresented: Bool = false
+    @AppStorage("isDebugMode") private var isDebugMode: Bool = false
 
     var body: some View {
         VStack {
@@ -55,6 +57,18 @@ struct ChatView: View {
             }
             .padding()
         }
+        .confirmationDialog(
+            "Enable debug mode?",
+            isPresented: $isEnableDebugAlertPresented
+        ) {
+            Button("Enable", role: .destructive) {
+                isDebugMode = true
+                withAnimation(.spring()) {
+                    messages.append(.init(text: "Debug mode enabled.", isUser: false))
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
 
     private func chatBubble(for message: ChatMessage) -> some View {
@@ -80,6 +94,11 @@ struct ChatView: View {
         }
         inputText = ""
 
+        if trimmed.lowercased() == "enable debug" {
+            isEnableDebugAlertPresented = true
+            return
+        }
+
         Task {
             let responseText: String
             if let wish = pendingWish {
@@ -103,25 +122,27 @@ struct ChatView: View {
                     responseText = "Okay, let me know if you change your mind."
                     pendingWish = nil
                 } else {
-                    let wish = try? await SuggestWishIntent.perform(trimmed)
-                    if let wish {
-                        pendingWish = wish
-                        responseText = "How about \"\(wish.title)\"?"
-                    } else {
-                        responseText = "I couldn't come up with a wish."
-                    }
+                    responseText = await suggestWish(from: trimmed)
                 }
             } else {
-                let wish = try? await SuggestWishIntent.perform(trimmed)
-                if let wish {
-                    pendingWish = wish
-                    responseText = "How about \"\(wish.title)\"?"
-                } else {
-                    responseText = "I couldn't come up with a wish."
-                }
+                responseText = await suggestWish(from: trimmed)
             }
             withAnimation(.spring()) {
                 messages.append(.init(text: responseText, isUser: false))
+            }
+        }
+    }
+
+    private func suggestWish(from text: String) async -> String {
+        do {
+            let wish = try await SuggestWishIntent.perform(text)
+            pendingWish = wish
+            return "How about \"\(wish.title)\"?"
+        } catch {
+            if isDebugMode {
+                return error.localizedDescription
+            } else {
+                return "I couldn't come up with a wish."
             }
         }
     }
