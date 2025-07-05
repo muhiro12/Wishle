@@ -1,0 +1,255 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "About" : {
+
+    },
+    "Active" : {
+
+    },
+    "Add Item" : {
+
+    },
+    "Add to Wishes" : {
+
+    },
+    "Add Wish" : {
+
+    },
+    "All" : {
+
+    },
+    "App" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Category" : {
+
+    },
+    "Chat" : {
+
+    },
+    "Check for Update" : {
+
+    },
+    "Close" : {
+
+    },
+    "Completed" : {
+
+    },
+    "Context" : {
+
+    },
+    "Data" : {
+
+    },
+    "Debug" : {
+
+    },
+    "Debug Tools" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete All Data" : {
+
+    },
+    "Delete all data?" : {
+
+    },
+    "Delete Wish" : {
+
+    },
+    "Due Date" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit Wish" : {
+
+    },
+    "Enable" : {
+
+    },
+    "Enable debug mode?" : {
+
+    },
+    "Enter message" : {
+
+    },
+    "Error" : {
+
+    },
+    "Fetch Random Wish" : {
+
+    },
+    "Free" : {
+
+    },
+    "Generate" : {
+
+    },
+    "Generate Sample Data" : {
+
+    },
+    "Generate sample data?" : {
+
+    },
+    "Get Random Wish" : {
+
+    },
+    "Get Started" : {
+
+    },
+    "High" : {
+
+    },
+    "ID" : {
+
+    },
+    "Is Completed" : {
+
+    },
+    "Item at %@" : {
+
+    },
+    "Long press on a wish to edit it." : {
+
+    },
+    "Long-press for quick edit" : {
+
+    },
+    "Manage Subscription" : {
+
+    },
+    "Next" : {
+
+    },
+    "No" : {
+
+    },
+    "No wishes found." : {
+
+    },
+    "Normal" : {
+
+    },
+    "Notes" : {
+
+    },
+    "OK" : {
+
+    },
+    "Open App Store" : {
+
+    },
+    "Please update Wishle to the latest version to continue using it." : {
+
+    },
+    "Priority" : {
+
+    },
+    "Reset" : {
+
+    },
+    "Reset Onboarding" : {
+
+    },
+    "Reset onboarding flow?" : {
+
+    },
+    "Restore Purchases" : {
+
+    },
+    "Save" : {
+
+    },
+    "Select an item" : {
+
+    },
+    "Send" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Status" : {
+
+    },
+    "Subscribe %@" : {
+
+    },
+    "Subscription" : {
+
+    },
+    "Suggest" : {
+
+    },
+    "Suggest From Random" : {
+
+    },
+    "Suggest From Recent" : {
+
+    },
+    "Suggest Wish" : {
+
+    },
+    "Suggest Wish from Random" : {
+
+    },
+    "Suggest Wish from Recent" : {
+
+    },
+    "Suggestions" : {
+
+    },
+    "Swipe a wish to mark it completed." : {
+
+    },
+    "Swipe to complete" : {
+
+    },
+    "Tag" : {
+
+    },
+    "Tags" : {
+
+    },
+    "Tap a button below to get a suggestion." : {
+
+    },
+    "Title" : {
+
+    },
+    "Unlock iCloud sync and remove ads." : {
+
+    },
+    "Update Required" : {
+
+    },
+    "Update Wish" : {
+
+    },
+    "Version" : {
+
+    },
+    "Wish" : {
+
+    },
+    "Wishes" : {
+
+    },
+    "Wishle Pro" : {
+
+    },
+    "Yes" : {
+
+    }
+  },
+  "version" : "1.1"
+}
