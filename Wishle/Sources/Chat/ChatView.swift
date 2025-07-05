@@ -15,6 +15,8 @@ struct ChatView: View {
     @State private var messages: [ChatMessage] = []
     @State private var inputText: String = ""
     @State private var pendingWish: Wish?
+    @State private var isSending: Bool = false
+    @State private var isPresentingAddSheet: Bool = false
     @State private var isEnableDebugAlertPresented: Bool = false
     @AppStorage("isDebugMode") private var isDebugMode: Bool = false
 
@@ -54,7 +56,10 @@ struct ChatView: View {
                     send()
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(
+                    inputText.trimmingCharacters(in: .whitespaces).isEmpty ||
+                        isSending
+                )
             }
             .padding()
         }
@@ -69,6 +74,12 @@ struct ChatView: View {
                 }
             }
             Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $isPresentingAddSheet) {
+            if let wish = pendingWish {
+                AddWishView(title: wish.title, notes: wish.notes ?? "", priority: wish.priority)
+            }
+        }
         }
     }
 
@@ -102,52 +113,50 @@ struct ChatView: View {
         }
 
         Task {
-            let responseText: String
-            if let wish = pendingWish {
-                if trimmed.lowercased().contains("yes") ||
-                    trimmed.lowercased().contains("add") {
-                    let result = try? AddWishIntent.perform((
-                        context: context,
-                        title: wish.title,
-                        notes: wish.notes,
-                        dueDate: nil,
-                        priority: wish.priority
-                    ))
-                    if let result {
-                        responseText = "Added: \(result.title)"
+            isSending = true
+            do {
+                let responseText: String
+                if let wish = pendingWish {
+                    if trimmed.lowercased().contains("yes") ||
+                        trimmed.lowercased().contains("add") {
+                        isPresentingAddSheet = true
+                        responseText = "Opening the form."
+                    } else if trimmed.lowercased().contains("no") ||
+                                trimmed.lowercased().contains("cancel") {
+                        responseText = "Okay, let me know if you change your mind."
+                        pendingWish = nil
                     } else {
-                        responseText = "Failed to add wish"
+                        responseText = try await SendChatMessageIntent.perform(trimmed)
                     }
-                    pendingWish = nil
-                } else if trimmed.lowercased().contains("no") ||
-                            trimmed.lowercased().contains("cancel") {
-                    responseText = "Okay, let me know if you change your mind."
-                    pendingWish = nil
+                } else if trimmed.lowercased().contains("ok") ||
+                            trimmed.lowercased().contains("looks good") ||
+                            trimmed.lowercased().contains("done") {
+                    if let wish = try? await SummarizeChatIntent.perform(()) {
+                        pendingWish = wish
+                        responseText = "Shall I create \"\(wish.title)\"?"
+                    } else {
+                        responseText = "I couldn't summarize the wish."
+                    }
                 } else {
-                    responseText = await suggestWish(from: trimmed)
+                    responseText = try await SendChatMessageIntent.perform(trimmed)
                 }
-            } else {
-                responseText = await suggestWish(from: trimmed)
+                withAnimation(.spring()) {
+                    messages.append(.init(text: responseText, isUser: false))
+                }
+            } catch {
+                let text: String
+                if isDebugMode {
+                    text = error.localizedDescription
+                } else {
+                    text = "Something went wrong."
+                }
+                withAnimation(.spring()) {
+                    messages.append(.init(text: text, isUser: false))
+                }
             }
-            withAnimation(.spring()) {
-                messages.append(.init(text: responseText, isUser: false))
-            }
+            isSending = false
         }
-    }
 
-    private func suggestWish(from text: String) async -> String {
-        do {
-            let wish = try await SuggestWishIntent.perform(text)
-            pendingWish = wish
-            return "How about \"\(wish.title)\"?"
-        } catch {
-            if isDebugMode {
-                return error.localizedDescription
-            } else {
-                return "I couldn't come up with a wish."
-            }
-        }
-    }
 }
 
 #Preview {
