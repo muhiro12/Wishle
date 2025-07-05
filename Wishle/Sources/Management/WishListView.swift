@@ -92,9 +92,9 @@ struct WishListView: View {
             .sheet(item: $editingWish) { model in
                 EditWishView(wishModel: model)
             }
-            .onChange(of: statusFilter) { _ in applyFilter() }
-            .onChange(of: selectedTagID) { _ in applyFilter() }
-            .onChange(of: wishes) { _ in applyFilter() }
+            .onChange(of: statusFilter) { applyFilter() }
+            .onChange(of: selectedTagID) { applyFilter() }
+            .onChange(of: wishes) { applyFilter() }
             .task { applyFilter() }
         }
     }
@@ -117,7 +117,7 @@ struct WishListView: View {
         case .all:
             break
         case .completed:
-            models = models.filter { $0.isCompleted }
+            models = models.filter(\.isCompleted)
         case .incomplete:
             models = models.filter { !$0.isCompleted }
         }
