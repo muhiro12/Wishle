@@ -12,7 +12,9 @@ struct SendChatMessageIntent: AppIntent, IntentPerformer {
     nonisolated static let title: LocalizedStringResource = "Send Chat Message"
 
     static func perform(_ input: Input) async throws -> Output {
-        let reply = try await ChatSession.session.respond(to: input)
+        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
+        let prompt = "Respond in the user's device language: \(language). \(input)"
+        let reply = try await ChatSession.session.respond(to: prompt)
         return reply.content
     }
 

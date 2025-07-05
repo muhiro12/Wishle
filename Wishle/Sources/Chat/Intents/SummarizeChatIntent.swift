@@ -9,8 +9,10 @@ struct SummarizeChatIntent: AppIntent, IntentPerformer {
     nonisolated static let title: LocalizedStringResource = "Summarize Chat"
 
     static func perform(_: Input) async throws -> Output {
+        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
+        let prompt = "Respond in the user's device language: \(language). Summarize our conversation as a wish."
         let result = try await ChatSession.session.respond(
-            to: "Summarize our conversation as a wish.",
+            to: prompt,
             generating: WishDraft.self
         )
         return .init(
