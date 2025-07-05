@@ -472,7 +472,14 @@
       }
     },
     "OK" : {
-      "shouldTranslate" : false
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "Open App Store" : {
       "localizations" : {
