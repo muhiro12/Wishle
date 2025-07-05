@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct WishleApp: App {
     @State private var subscriptionManager = SubscriptionManager.shared
+    @State private var notificationManager = NotificationManager.shared
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
 
     var sharedModelContainer: ModelContainer {
@@ -43,6 +44,12 @@ struct WishleApp: App {
             }
             .task {
                 await subscriptionManager.load()
+            }
+            .task {
+                await notificationManager.requestAuthorization()
+                notificationManager.recordLaunch()
+                notificationManager.scheduleDailySuggestion()
+                notificationManager.scheduleLaunchBasedSuggestion()
             }
         }
         .modelContainer(sharedModelContainer)

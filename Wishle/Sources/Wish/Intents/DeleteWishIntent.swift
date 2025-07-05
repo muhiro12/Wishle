@@ -8,6 +8,7 @@
 import AppIntents
 import SwiftData
 import SwiftUtilities
+import UserNotifications
 
 struct DeleteWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, id: String)
@@ -30,6 +31,7 @@ struct DeleteWishIntent: AppIntent, IntentPerformer {
         }
         context.delete(model)
         try context.save()
+        NotificationManager.shared.removeDeadlineNotification(for: model.id)
     }
 
     func perform() throws -> some IntentResult {

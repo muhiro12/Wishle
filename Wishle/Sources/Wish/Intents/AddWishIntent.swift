@@ -8,6 +8,7 @@
 import AppIntents
 import SwiftData
 import SwiftUtilities
+import UserNotifications
 
 struct AddWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, title: String, notes: String?, dueDate: Date?, priority: Int)
@@ -39,6 +40,7 @@ struct AddWishIntent: AppIntent, IntentPerformer {
         )
         context.insert(model)
         try context.save()
+        NotificationManager.shared.scheduleDeadlineNotification(for: model, daysBefore: 1)
         return model.wish
     }
 
