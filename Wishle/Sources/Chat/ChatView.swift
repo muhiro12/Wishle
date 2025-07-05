@@ -100,7 +100,7 @@ struct ChatView: View {
                     }
                     pendingWish = nil
                 } else if trimmed.lowercased().contains("no") ||
-                    trimmed.lowercased().contains("cancel") {
+                            trimmed.lowercased().contains("cancel") {
                     responseText = "Okay, let me know if you change your mind."
                     pendingWish = nil
                 } else {
