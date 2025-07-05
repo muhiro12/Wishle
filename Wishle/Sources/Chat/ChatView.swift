@@ -4,6 +4,7 @@
 //
 //  Created by Codex on 2025/06/19.
 
+import AppIntents
 import Foundation
 import SwiftData
 import SwiftUI
@@ -14,8 +15,6 @@ struct ChatView: View {
     @State private var messages: [ChatMessage] = []
     @State private var inputText: String = ""
     @State private var pendingWish: Wish?
-
-    private let suggestionService = AISuggestionService.shared
 
     var body: some View {
         VStack {
@@ -104,21 +103,19 @@ struct ChatView: View {
                     responseText = "Okay, let me know if you change your mind."
                     pendingWish = nil
                 } else {
-                    let suggestions = try? await suggestionService.suggestWishes(
-                        for: .init(text: trimmed)
-                    )
-                    if let suggestion = suggestions?.first {
-                        pendingWish = suggestion
-                        responseText = "How about \"\(suggestion.title)\"?"
+                    let wish = try? await SuggestWishIntent.perform(trimmed)
+                    if let wish {
+                        pendingWish = wish
+                        responseText = "How about \"\(wish.title)\"?"
                     } else {
                         responseText = "I couldn't come up with a wish."
                     }
                 }
             } else {
-                let suggestions = try? await suggestionService.suggestWishes(for: .init(text: trimmed))
-                if let suggestion = suggestions?.first {
-                    pendingWish = suggestion
-                    responseText = "How about \"\(suggestion.title)\"?"
+                let wish = try? await SuggestWishIntent.perform(trimmed)
+                if let wish {
+                    pendingWish = wish
+                    responseText = "How about \"\(wish.title)\"?"
                 } else {
                     responseText = "I couldn't come up with a wish."
                 }
