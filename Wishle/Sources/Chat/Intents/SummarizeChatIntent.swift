@@ -1,6 +1,7 @@
 import AppIntents
 import FoundationModels
 import SwiftUtilities
+import Foundation
 
 struct SummarizeChatIntent: AppIntent, IntentPerformer {
     typealias Input = Void
@@ -9,8 +10,7 @@ struct SummarizeChatIntent: AppIntent, IntentPerformer {
     nonisolated static let title: LocalizedStringResource = "Summarize Chat"
 
     static func perform(_: Input) async throws -> Output {
-        let language = Locale.current.language.languageCode?.identifier ?? Locale.current.identifier
-        let prompt = "Respond in the user's device language: \(language). Summarize our conversation as a wish."
+        let prompt = PromptHelper.localized("Summarize our conversation as a wish.")
         let result = try await ChatSession.session.respond(
             to: prompt,
             generating: WishDraft.self
