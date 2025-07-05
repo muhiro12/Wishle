@@ -70,7 +70,12 @@ struct ChatView: View {
             Button("Enable", role: .destructive) {
                 isDebugMode = true
                 withAnimation(.spring()) {
-                    messages.append(.init(text: "Debug mode enabled.", isUser: false))
+                    messages.append(
+                        .init(
+                            text: String(localized: "Debug mode enabled."),
+                            isUser: false
+                        )
+                    )
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -119,10 +124,12 @@ struct ChatView: View {
                     if trimmed.lowercased().contains("yes") ||
                         trimmed.lowercased().contains("add") {
                         isPresentingAddSheet = true
-                        responseText = "Opening the form."
+                        responseText = String(localized: "Opening the form.")
                     } else if trimmed.lowercased().contains("no") ||
                                 trimmed.lowercased().contains("cancel") {
-                        responseText = "Okay, let me know if you change your mind."
+                        responseText = String(
+                            localized: "Okay, let me know if you change your mind."
+                        )
                         pendingWish = nil
                     } else {
                         responseText = try await SendChatMessageIntent.perform(trimmed)
@@ -132,9 +139,13 @@ struct ChatView: View {
                             trimmed.lowercased().contains("done") {
                     if let wish = try? await SummarizeChatIntent.perform(()) {
                         pendingWish = wish
-                        responseText = "Shall I create \"\(wish.title)\"?"
+                        let format = NSLocalizedString(
+                            "Shall I create \"%@\"?",
+                            comment: "Prompt to confirm wish creation"
+                        )
+                        responseText = String(format: format, wish.title)
                     } else {
-                        responseText = "I couldn't summarize the wish."
+                        responseText = String(localized: "I couldn't summarize the wish.")
                     }
                 } else {
                     responseText = try await SendChatMessageIntent.perform(trimmed)
@@ -147,7 +158,7 @@ struct ChatView: View {
                 if isDebugMode {
                     text = error.localizedDescription
                 } else {
-                    text = "Something went wrong."
+                    text = String(localized: "Something went wrong.")
                 }
                 withAnimation(.spring()) {
                     messages.append(.init(text: text, isUser: false))

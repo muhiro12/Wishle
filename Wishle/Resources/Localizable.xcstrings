@@ -162,6 +162,16 @@
         }
       }
     },
+    "Debug mode enabled." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグモードが有効になりました。"
+          }
+        }
+      }
+    },
     "Debug Tools" : {
       "localizations" : {
         "ja" : {
@@ -368,6 +378,16 @@
         }
       }
     },
+    "I couldn't summarize the wish." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィッシュを要約できませんでした。"
+          }
+        }
+      }
+    },
     "ID" : {
       "localizations" : {
         "ja" : {
@@ -512,24 +532,22 @@
         }
       }
     },
-    "Open App Store" : {
-      "extractionState" : "stale",
+    "Okay, let me know if you change your mind." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Storeを開く"
+            "value" : "気が変わったら教えてください。"
           }
         }
       }
     },
-    "Please update Wishle to the latest version to continue using it." : {
-      "extractionState" : "stale",
+    "Opening the form." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wishleを引き続き利用するには最新バージョンにアップデートしてください。"
+            "value" : "フォームを開いています。"
           }
         }
       }
@@ -594,17 +612,6 @@
         }
       }
     },
-    "Select an item" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アイテムを選択"
-          }
-        }
-      }
-    },
     "Send" : {
       "localizations" : {
         "ja" : {
@@ -628,12 +635,42 @@
         }
       }
     },
+    "Shall I create \"%@\"?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」を作成しますか?"
+          }
+        }
+      }
+    },
+    "Something went wrong." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "問題が発生しました。"
+          }
+        }
+      }
+    },
     "Status" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ステータス"
+          }
+        }
+      }
+    },
+    "Store what you wish to do, not what you must do." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "やらなければならないことではなく、やりたいことを記録しましょう。"
           }
         }
       }
@@ -801,17 +838,6 @@
         }
       }
     },
-    "Update Required" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップデートが必要です"
-          }
-        }
-      }
-    },
     "Update Wish" : {
       "localizations" : {
         "ja" : {
@@ -828,6 +854,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン"
+          }
+        }
+      }
+    },
+    "Welcome to Wishle" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wishleへようこそ"
           }
         }
       }
