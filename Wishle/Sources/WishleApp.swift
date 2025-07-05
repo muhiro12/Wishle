@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct WishleApp: App {
     @State private var subscriptionManager = SubscriptionManager.shared
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
 
     var sharedModelContainer: ModelContainer {
         let schema = Schema([
@@ -34,7 +35,7 @@ struct WishleApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if UserDefaults.standard.bool(forKey: "hasSeenOnboarding") {
+                if hasSeenOnboarding {
                     MainTabView()
                 } else {
                     OnboardingFlow()
