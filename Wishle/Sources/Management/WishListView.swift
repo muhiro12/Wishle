@@ -75,6 +75,7 @@ struct WishListView: View {
                     }
                     .onDelete(perform: delete)
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("Wishes")
             .toolbar {
