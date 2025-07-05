@@ -131,7 +131,14 @@
 
     },
     "No" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ"
+          }
+        }
+      }
     },
     "No wishes found." : {
 
@@ -143,7 +150,7 @@
 
     },
     "OK" : {
-
+      "shouldTranslate" : false
     },
     "Open App Store" : {
 
@@ -248,7 +255,14 @@
 
     },
     "Yes" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "はい"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
