@@ -5,7 +5,9 @@
 //  Created by Hiromu Nakano on 2025/06/17.
 //
 
+import AppIntents
 import Foundation
+import SwiftUtilities
 
 /// In-memory representation of a wish item.
 @Observable
@@ -57,9 +59,24 @@ nonisolated final class Wish {
         self.updatedAt = updatedAt
         self.tags = tags
     }
+}
 
-    /// Creates a ``Wish`` from a ``WishModel``.
-    convenience init(_ model: WishModel) {
+extension Wish: AppEntity {
+    static let defaultQuery = WishQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: LocalizedStringResource("Wish"))
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: .init(stringLiteral: title))
+    }
+}
+
+extension Wish: ModelBridgeable {
+    typealias Model = WishModel
+
+    convenience init?(_ model: WishModel) {
         self.init(
             id: model.id,
             title: model.title,

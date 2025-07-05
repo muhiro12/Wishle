@@ -5,7 +5,9 @@
 //  Created by Hiromu Nakano on 2025/06/17.
 //
 
+import AppIntents
 import Foundation
+import SwiftUtilities
 
 /// In-memory representation of a tag used to categorize wishes.
 @Observable
@@ -19,11 +21,6 @@ nonisolated final class Tag {
          name: String) {
         self.id = id
         self.name = name.lowercased()
-    }
-
-    /// Creates a ``Tag`` from a ``TagModel``.
-    convenience init(_ model: TagModel) {
-        self.init(id: model.id, name: model.name)
     }
 
     /// Sample tags for preview usage.
@@ -40,5 +37,25 @@ nonisolated final class Tag {
 extension Tag: Equatable {
     static func == (lhs: Tag, rhs: Tag) -> Bool {
         lhs.id == rhs.id
+    }
+}
+
+extension Tag: AppEntity {
+    static let defaultQuery = TagQuery()
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "Tag")
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: .init(stringLiteral: name))
+    }
+}
+
+extension Tag: ModelBridgeable {
+    typealias Model = TagModel
+
+    convenience init?(_ model: TagModel) {
+        self.init(id: model.id, name: model.name)
     }
 }
