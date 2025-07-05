@@ -120,23 +120,21 @@ struct ChatView: View {
             isSending = true
             do {
                 let responseText: String
+                let action = try? await ChatClassifier.classify(trimmed)
                 if pendingWish != nil {
-                    if trimmed.lowercased().contains("yes") ||
-                        trimmed.lowercased().contains("add") {
+                    switch action {
+                    case .confirm?:
                         isPresentingAddSheet = true
                         responseText = String(localized: "Opening the form.")
-                    } else if trimmed.lowercased().contains("no") ||
-                                trimmed.lowercased().contains("cancel") {
+                    case .cancel?:
                         responseText = String(
                             localized: "Okay, let me know if you change your mind."
                         )
                         pendingWish = nil
-                    } else {
+                    default:
                         responseText = try await SendChatMessageIntent.perform(trimmed)
                     }
-                } else if trimmed.lowercased().contains("ok") ||
-                            trimmed.lowercased().contains("looks good") ||
-                            trimmed.lowercased().contains("done") {
+                } else if action == .complete {
                     if let wish = try? await SummarizeChatIntent.perform(()) {
                         pendingWish = wish
                         let format = NSLocalizedString(
