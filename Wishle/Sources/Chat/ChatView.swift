@@ -78,6 +78,7 @@ struct ChatView: View {
                 Spacer()
             }
             Text(message.text)
+                .textSelection(.enabled)
                 .liquidGlass(cornerRadius: 20)
             if !message.isUser {
                 Spacer()
