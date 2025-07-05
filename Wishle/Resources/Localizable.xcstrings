@@ -636,6 +636,7 @@
       }
     },
     "Shall I create \"%@\"?" : {
+      "comment" : "Prompt to confirm wish creation",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
