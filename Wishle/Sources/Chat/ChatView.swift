@@ -4,6 +4,7 @@
 //
 //  Created by Codex on 2025/06/19.
 
+import Foundation
 import SwiftData
 import SwiftUI
 
@@ -12,6 +13,9 @@ struct ChatView: View {
 
     @State private var messages: [ChatMessage] = []
     @State private var inputText: String = ""
+    @State private var pendingWish: Wish?
+
+    private let suggestionService = AISuggestionService.shared
 
     var body: some View {
         VStack {
@@ -36,7 +40,7 @@ struct ChatView: View {
             }
             Divider()
             HStack {
-                TextField("Enter wish", text: $inputText)
+                TextField("Enter message", text: $inputText)
                     .textFieldStyle(.roundedBorder)
                 Button("Send") {
                     send()
@@ -67,26 +71,52 @@ struct ChatView: View {
         guard !trimmed.isEmpty else {
             return
         }
-        let userMessage = ChatMessage(text: trimmed, isUser: true)
-        messages.append(userMessage)
+        messages.append(.init(text: trimmed, isUser: true))
         inputText = ""
 
         Task {
-            let wish = try? AddWishIntent.perform((
-                context: context,
-                title: trimmed,
-                notes: nil,
-                dueDate: nil,
-                priority: 0
-            ))
             let responseText: String
-            if let wish {
-                responseText = "Added: \(wish.title)"
+            if let wish = pendingWish {
+                if trimmed.lowercased().contains("yes") ||
+                    trimmed.lowercased().contains("add") {
+                    let result = try? AddWishIntent.perform((
+                        context: context,
+                        title: wish.title,
+                        notes: wish.notes,
+                        dueDate: nil,
+                        priority: wish.priority
+                    ))
+                    if let result {
+                        responseText = "Added: \(result.title)"
+                    } else {
+                        responseText = "Failed to add wish"
+                    }
+                    pendingWish = nil
+                } else if trimmed.lowercased().contains("no") ||
+                    trimmed.lowercased().contains("cancel") {
+                    responseText = "Okay, let me know if you change your mind."
+                    pendingWish = nil
+                } else {
+                    let suggestions = try? await suggestionService.suggestWishes(
+                        for: .init(text: trimmed)
+                    )
+                    if let suggestion = suggestions?.first {
+                        pendingWish = suggestion
+                        responseText = "How about \"\(suggestion.title)\"?"
+                    } else {
+                        responseText = "I couldn't come up with a wish."
+                    }
+                }
             } else {
-                responseText = "Failed to add wish"
+                let suggestions = try? await suggestionService.suggestWishes(for: .init(text: trimmed))
+                if let suggestion = suggestions?.first {
+                    pendingWish = suggestion
+                    responseText = "How about \"\(suggestion.title)\"?"
+                } else {
+                    responseText = "I couldn't come up with a wish."
+                }
             }
-            let botMessage = ChatMessage(text: responseText, isUser: false)
-            messages.append(botMessage)
+            messages.append(.init(text: responseText, isUser: false))
         }
     }
 }
