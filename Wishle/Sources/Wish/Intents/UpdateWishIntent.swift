@@ -8,6 +8,7 @@
 import AppIntents
 import SwiftData
 import SwiftUtilities
+import UserNotifications
 
 struct UpdateWishIntent: AppIntent, IntentPerformer {
     typealias Input = (context: ModelContext, id: String, title: String?, notes: String?, dueDate: Date?, isCompleted: Bool?, priority: Int?)
@@ -60,6 +61,8 @@ struct UpdateWishIntent: AppIntent, IntentPerformer {
         }
         model.updatedAt = .now
         try context.save()
+        NotificationManager.shared.removeDeadlineNotification(for: model.id)
+        NotificationManager.shared.scheduleDeadlineNotification(for: model, daysBefore: 1)
     }
 
     func perform() throws -> some IntentResult {
