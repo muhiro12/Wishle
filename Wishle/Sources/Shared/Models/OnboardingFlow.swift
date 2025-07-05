@@ -35,7 +35,12 @@ struct OnboardingFlow: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            page(title: "Welcome to Wishle", description: "Store what you wish to do, not what you must do.") {
+            page(
+                title: String(localized: "Welcome to Wishle"),
+                description: String(
+                    localized: "Store what you wish to do, not what you must do."
+                )
+            ) {
                 Button("Next") {
                     selection = 1
                 }
