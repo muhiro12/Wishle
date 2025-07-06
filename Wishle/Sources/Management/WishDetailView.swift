@@ -16,22 +16,64 @@ struct WishDetailView: View {
 
     var body: some View {
         List {
-            if let notes = wish.notes {
-                Section("Notes") {
-                    Text(notes)
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text(wish.title)
+                            .font(.title2.bold())
+                        Spacer()
+                        if wish.priority == 1 {
+                            Image(systemName: "exclamationmark.circle.fill")
+                                .foregroundColor(.red)
+                        }
+                        if wish.isCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        }
+                    }
+                    if let notes = wish.notes {
+                        Text(notes)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
+
             if let dueDate = wish.dueDate {
                 Section("Due Date") {
-                    Text(dueDate.formatted(date: .abbreviated, time: .shortened))
+                    Label(
+                        dueDate.formatted(date: .abbreviated, time: .shortened),
+                        systemImage: wish.isOverdue ? "calendar.badge.exclamationmark" : "calendar"
+                    )
                 }
             }
+
+            Section("Created") {
+                Label(
+                    wish.createdAt.formatted(date: .abbreviated, time: .shortened),
+                    systemImage: "clock.badge.checkmark"
+                )
+            }
+
+            Section("Updated") {
+                Label(
+                    wish.updatedAt.formatted(date: .abbreviated, time: .shortened),
+                    systemImage: "arrow.triangle.2.circlepath"
+                )
+            }
+
             Section("Completed") {
                 Text(wish.isCompleted ? "Yes" : "No")
             }
+
             Section("Priority") {
                 Text(wish.priority == 0 ? "Normal" : "High")
             }
+
+            Section("ID") {
+                Text(wish.id)
+            }
+
             if !wish.tags.isEmpty {
                 Section("Tags") {
                     ForEach(wish.tags, id: \.id) { tag in
