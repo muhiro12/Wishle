@@ -39,28 +39,6 @@ struct WishListView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
-                Picker("Status", selection: $statusFilter) {
-                    ForEach(WishStatusFilter.allCases) { filter in
-                        Text(filter.rawValue).tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                Picker("Category", selection: $selectedTagID) {
-                    Text("All").tag(nil as String?)
-                    ForEach(tags) { tag in
-                        Text(tag.name.capitalized).tag(Optional(tag.id))
-                    }
-                }
-                .pickerStyle(.menu)
-
-                Picker("Priority", selection: $priorityFilter) {
-                    ForEach(WishPriorityFilter.allCases) { filter in
-                        Text(filter.rawValue).tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-
                 List {
                     ForEach(filteredWishes) { model in
                         NavigationLink {
@@ -116,6 +94,37 @@ struct WishListView: View {
             }
             .navigationTitle("Wishes")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Menu {
+                        Section("Status") {
+                            Picker("Status", selection: $statusFilter) {
+                                ForEach(WishStatusFilter.allCases) { filter in
+                                    Text(filter.rawValue).tag(filter)
+                                }
+                            }
+                        }
+
+                        Section("Category") {
+                            Picker("Category", selection: $selectedTagID) {
+                                Text("All").tag(nil as String?)
+                                ForEach(tags) { tag in
+                                    Text(tag.name.capitalized).tag(Optional(tag.id))
+                                }
+                            }
+                        }
+
+                        Section("Priority") {
+                            Picker("Priority", selection: $priorityFilter) {
+                                ForEach(WishPriorityFilter.allCases) { filter in
+                                    Text(filter.rawValue).tag(filter)
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "line.horizontal.3.decrease.circle")
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         isPresentingAddSheet = true
